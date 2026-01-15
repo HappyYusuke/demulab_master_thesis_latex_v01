@@ -1,0 +1,11 @@
+%========================================================
+% Abstract (English example; <= 200 words target)
+%========================================================
+Human-following is an important function for service robots, as it supports tasks such as mobility assistance and object
+transport. However, many existing systems do not handle cases in which the target person is hidden by obstacles, known as occlusion,
+and they often fail to continue tracking once the target is lost. To address this problem, we propose a human-following system that
+combines 3D LiDAR with a person re-identification method to enable re-detection and recovery after occlusion. For person detection,
+we use PointPillars, which provides fast and accurate inference, and we train it with the TAO Toolkit using a custom dataset of 19,500
+point-cloud frames. For re-identification after tracking loss, we apply the ReID3D framework, which can extract strong features from
+point clouds and allows robust identification of the target. To evaluate the training effectiveness of the proposed method, a comparative
+evaluation is conducted on a custom evaluation dataset consisting of 4,500 frames, using a standard pretrained model as a baseline.

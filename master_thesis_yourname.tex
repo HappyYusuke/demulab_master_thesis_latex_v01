@@ -1,0 +1,165 @@
+% KIT 出村研究室 修士論文とAdvanced Robotics投稿用 latexファイル　2026-01-07
+
+%%%%% 使い方 %%%%%
+% 修論の場合は何も変更しないでコンパイルする。
+% AR投稿論文は次行のthesisをarに変えてコンパイルする。
+\def\KITMODE{ar} % ← ar にしたければ thesis を ar に変える
+%\def\KITMODE{ar} % ← 修論にしたければ ar を thesis に変える
+\PassOptionsToPackage{dvipdfmx}{graphicx}
+\documentclass[\KITMODE]{kitinteract} 
+%%%%%%%%%%%%
+
+\usepackage[caption=false]{subfig}% Support for small, `sub' figures and tables
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage[numbers,sort&compress]{natbib}% Citation support using natbib.sty
+\usepackage{geometry}
+\geometry{margin=25mm}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{comment}
+\usepackage{amssymb}   % for \square
+
+% By kanazawa
+\usepackage{booktabs}
+\usepackage[hang,small,bf]{caption}
+%\usepackage[subrefformat=parens]{subcaption}
+\captionsetup{compatibility=false}
+\usepackage{indentfirst}
+\usepackage{pgffor}
+\usepackage{float}
+
+%\usepackage[nolists,tablesfirst]{endfloat}% To `separate' figures and tables from text if required
+%\usepackage[doublespacing]{setspace}% To produce a `double spaced' document if required
+%\setlength\parindent{24pt}% To increase paragraph indentation when line spacing is doubled
+
+\bibpunct[, ]{[}{]}{,}{n}{,}{,}% Citation support using natbib.sty
+\renewcommand\bibfont{\fontsize{10}{12}\selectfont}% Bibliography support using natbib.sty
+\makeatletter% @ becomes a letter
+\def\NAT@def@citea{\def\@citea{\NAT@separator}}% Suppress spaces between citations using natbib.sty
+\makeatother% @ becomes a symbol again
+
+\theoremstyle{plain}% Theorem-like structures provided by amsthm.sty
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem{notation}{Notation}
+
+
+% ----- Metadata shared by both modes -----
+\kituniversity{Kanazawa Institute of Technology}
+\kitdegree{Master's Thesis}
+% Default values are already set in kitinteract.cls, but you can override them here if needed.
+\kitfaculty{Graduate School of Engineering}
+\kitdepartment{Mechanical Engineering}
+%\kitmajor{Graduate Program in Robotics}
+
+% ----- KIT emblem on the cover (thesis mode only) -----
+% Place KIT_kosho.eps in the same folder as your .tex file.
+% You can adjust the size with \kitlogowidth{<dimension>}.
+\kitlogo{KIT_kosho.eps}
+% \kitlogowidth{28mm}
+
+% ----- 修論用 -----
+\kittitle{Your Master's Thesis Title}
+\kitauthor{Your Name}
+%\kitstudentid{20XX0000}
+\kitsupervisor{Prof. Kosei Demura}
+\kitsubmissiondate{January 2026}
+
+% ----- AR用 -----
+\title{Development of a Human Following System Using 3D LiDAR and ReID3D}
+\author{　% 指示がなければ出村はラストオーサー
+\name{Yusuke Kanazawa\textsuperscript{a} and Kosei Demura\textsuperscript{b}\thanks{CONTACT Kosei Demura. Email: demura@neptune.kanazawa-it.ac.jp}}
+\affil{\textsuperscript{a}Graduate School of Mechanical Engineering, Kanazawa Institute of Technology, Nonoichi, Ishikawa, Japan; \textsuperscript{b}Department of Robotics, Kanazawa Institute of Technology, Nonoichi, Ishikawa, Japan}
+}
+
+% ----- (Optional) One-page front note (inserted BEFORE cover/title) -----
+% This page uses a tighter line spacing and the same formatting in both modes.
+%\frontnote{frontnote.tex}
+
+
+% ----- Abstract & Key words (write once; used in both modes) -----
+\kitabstract{%
+\input{0_abstract.tex}
+}
+\kitkeywords{Human Following, Person Tracking, Person Identification, Point Clouds, 3D LiDAR}
+
+
+% ----- (Optional) Advanced Robotics metadata -----
+% In ar mode, \kittitle sets \title and \kitauthor sets \author.
+% You can add journal-style items like affiliations/thanks per interact.cls.
+
+\begin{document}
+
+% Unified front matter:
+%  - thesis mode: cover + abstract + ToC/LoF/LoT
+%  - ar mode: title + abstract + keywords
+\makefrontmatter
+
+\mainmatter
+
+\chapter{Introduction}
+\input{1_introduction.tex}
+\clearpage
+
+\chapter{Related Work}
+\input{2_related_work.tex}
+
+\chapter{Human-following System Using 3D LiDAR and ReID3D}
+\input{3_proposed_method.tex}
+
+\chapter{Experiments}
+\input{4_experiments.tex}
+
+\chapter{Conclusion}
+\input{5_conclusion.tex}
+\clearpage
+
+% 以下の5行は修論謝辞用なのでコメントアウトしています。
+%公聴会が終ってからLCに修論を提出する前にコメントアウトを解除してください。
+%\kitchapter*{\KITifThesis{Acknowledgements}{Acknowledgements}}
+%\thesisonly{\addcontentsline{toc}{chapter}{Acknowledgements}}
+%\thesisonly{%
+%\input{6_acknowledgements.tex}
+%}
+
+% ----- Bibliography -----
+% Use whichever workflow you prefer (BibTeX / BibLaTeX).
+% For BibTeX:
+% \bibliographystyle{plain}
+\bibliography{refs}
+\addcontentsline{toc}{chapter}{References}
+\begin{thebibliography}{99}
+\input{7_references.tex}
+\end{thebibliography}
+
+% ----- Publications page (expected to be 1 page) -----
+\thesisonly{%
+    \publicationspage{%
+    \begin{enumerate}
+       \item Your related publication 1.
+       \item Your related publication 2.
+    \end{enumerate}
+    }
+}
+
+\end{document}
+
+
+% --- Structural mapping note -------------------------------------------------
+% For a single-source workflow (thesis chapters -> journal sections), prefer:
+%   \kitchapter{...}, \kitsection{...}, \kitsubsection{...}
+% In [ar] mode, kitinteract also enables automatic level mapping by default:
+%   \chapter -> \section, \section -> \subsection, ...
+% Disable with: \documentclass[ar,nomaplevels]{kitinteract}

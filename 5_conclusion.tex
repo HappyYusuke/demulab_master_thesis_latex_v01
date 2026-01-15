@@ -1,0 +1,17 @@
+\section{Conclusion}
+In this study, we developed a human-following system using 3D LiDAR. We verified its performance in pedestrian detection, tracking, and re-identification.
+
+For this system, we adopted PointPillars, which was optimized for the point cloud characteristics of the Livox 3D LiDAR. By training the model with a custom dataset that we built independently, we successfully constructed a high-precision pedestrian detector. Furthermore, by integrating ReID3D, we realized a human-following system that can re-identify the target person even after occlusion (being hidden by obstacles) occurs.
+
+To verify the effectiveness of the proposed method, we conducted evaluation experiments using both our custom dataset and a public dataset. The results showed that the optimized PointPillars significantly outperformed the conventional model in pedestrian detection. Thus, the usefulness of our method was confirmed.
+
+
+
+\section{Future Work}
+There are two main tasks for future work.
+
+First is the further improvement of pedestrian detection performance. From the experimental results, we confirmed a tendency where the system failed to detect pedestrians when they stopped and stood upright. We believe the cause is that the dataset used for training was dominated by point clouds of moving pedestrians, and data of stationary pedestrians was insufficient. Therefore, we expect to improve the detection performance by constructing a new dataset that includes more point clouds of stopped pedestrians and performing retraining.
+
+Second is the improvement of tracking and re-identification performance. Our system uses a linear Kalman Filter for tracking. However, there remains an issue where tracking becomes difficult when the relative trajectory becomes non-linear due to sudden movements of the pedestrian or the robot. To solve this, we believe that introducing non-linear estimation methods, such as the Extended Kalman Filter (EKF) or the Unscented Kalman Filter (UKF), would be effective.
+
+In addition, ReID3D, which we used as the re-identification model, assumes scenarios like intersection monitoring. It relies on the assumption that the target is far away and the entire body is captured in the point cloud. However, in the human-following task, the distance between the LiDAR and the pedestrian is short. Consequently, situations frequently occur where only a part of the body is measured because the target goes out of the field of view. Therefore, it is necessary to develop a new model that can perform robust re-identification even from short-range and partial point cloud information.

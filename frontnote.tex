@@ -1,0 +1,125 @@
+% 0_frontnote.tex
+% One-page front note inserted before the cover/title by \makefrontmatter.
+% Formatting (tight line spacing) is controlled by kitinteract.cls.
+
+\begin{center}
+\begin{center}
+\fbox{\parbox{0.9\linewidth}{\centering \bfseries
+本資料は出村研究室関係者限定。無断転載・無断共有を禁ずる。
+}}
+\end{center}
+\vspace{5mm}
+{\Large 修士論文及びAR投稿論文の書き方 v0.1} \\
+\vspace{3mm}
+金沢工業大学　情報理工学部　ロボティクス学科　出村 公成 \\
+\vspace{2mm}
+2026-1-8
+\end{center}
+
+\setlength{\parindent}{1zw}
+
+
+%{\setstretch{0.9}
+%\noindent
+%\textbf{はじめに} 
+%\vspace*{3mm}
+\subsection*{はじめに}
+
+　本資料では修士論文並びにAdvanced Robotics （以降、ARと記す）への投稿論文の書き方や注意すべき点を述べる。しっかり読んで素晴らしい論文を作成して、修士公聴会の合格並びに論文採択を勝ち取ってもらいたい。
+
+論文を書く前に「理科系の作文技術（木下著）、中央新書」を必ず読むこと。この本は、理科系の文章を書く上でのバイブルと呼ばれているもので、今後、色々な文章を書く上での必要な知識と技術が散りばめられている。人生の財産となる本と考えられる。文章を書く上では、まず、パラグラフ（段落）を意識して文章を書くこと。パラグラフを木下氏は次のように定義している。「一つのトピック
+（小主題）についてある一つのこと（考え）を言う（記述する，明言する，主張する）ものである．」。なお、パラグラフはトピックセンテンスとその説明から構成され、トピ ックセンテンスをつなげると論文の要旨になる。
+
+修士論文に関しては、2024年度修了した学生がAへ投稿しなかった反省から、2025年度からに修士論文のLatexソースを使い、そのままARに投稿するフォーマットでPDFを生成するLatexクラス\texttt{kitintract.cls}を開発した。修論はARにそのまま投稿できる本文、図表、参考文献で記述し、テンプレート\verb|demulab_master_thesis_yourname.tex|を使い日本語で執筆する。それをChatGPTで英語に翻訳する。副査と主査には英語の修士論文を提出し、Advanced Roboticsに提出するように勧められた論文に関しては、成績評定前の2月15日までに投稿すること。
+
+修論とAR投稿論文用PDFの出力切り替え方法を説明する。開発した \texttt{kitinteract.cls} クラスには２つのモードがあり、\verb|demulab_master_thesis_yourname.tex|の6行目で、KITモードを\verb|thesis|にすれば修論用のPDFを出力し、\verb|ar|にすればAR投稿論文用のPDFを出力する。
+
+なお、本資料は、金沢工業大学 情報理工学部 ロボティクス学科 出村研究室の「DemuLab流論文・レポートの書き方」に慶応義塾大学 理工学部 情報工学科杉浦孔明先生の「60 Qestions \& Answers公開版23」の手法を出村研究室に合うように改変して取り入れたものである。出村が慶応義塾大学大学院博士課程時に所属していた安西研究室のノウハウや査読者からのコメント、査読者として査読したとき経験並びに杉浦先生や先人の知恵と大規模言語モデルを活用して生まれたものである。
+
+\subsection*{論文構成}
+　以下の5章（節）構成とする。
+\vspace{-3mm}
+\begin{enumerate}[label=\arabic*, itemsep=0pt,  parsep=0pt]
+  \item はじめに・序論 / Introduction
+  \item 関連研究 / Related Work
+  \item 提案手法 Proposed Method（自分の研究内容を表すものに変更すること）
+     \begin{enumerate}[label=\arabic{enumi}.\arabic*, itemsep=0pt,  parsep=0pt]
+     \item 問題設定 / Problem Statement
+     \item 手法 / Method
+    \end{enumerate}
+ \item 実験 / Experiments
+     \begin{enumerate}[label=\arabic{enumi}.\arabic*, itemsep=0pt,  parsep=0pt]
+        \item 実験設定 / Experimental Setup
+        \item 実験結果 / Experimental Results
+    \end{enumerate} 
+  \item 結論 / Conclusion
+\end{enumerate}
+
+\subsection*{論文の書き進め方}
+\vspace*{-10mm}
+\begin{enumerate}[label=\arabic*, itemsep=0pt,  parsep=0pt.]
+  \item テンプレート論文の各節には、書くべき内容が指示されているので、基本的にはそれに添って執筆を進める。ただ、研究内容によっては、そぐわないものもあるので、適宜、削除や追加する。各項目については、トピックセンテンスから書くこと。この詳細については、前述した「理科系の作文技術」を参照して欲しい。
+  
+  また、テンプレート論文には、各章（節）の書き方に従って、ChatGPT5.2で生成した日本語と英語のサンプル文を参考までに掲載している。これはお手本ではないので、まねないであくまで参考に留めて欲しい。お手本はトップジャーナルに掲載され論文賞を受賞したり、引用数の多い論文である。機械翻訳だけに頼るのではなく、是非、自分の頭で英語を読んで欲しい。
+
+ 
+  \item 「1 はじめに」からスタートすると詰まるので、以下の順で書くこと。
+  {\small
+  \begin{itemize}
+    \item do \{3.1 問題設定\} while (完了率 $<66\%$);
+    \item do \{4.1 実験設定\} while (完了率 $<66\%$);
+    \item do \{3.2 手法\} while (完了率 $<50\%$);
+    \item do \{4.2 実験結果\} while (完了率 $<66\%$);
+    \item do \{3.1 問題設定, 4 手法, 5 実験設定, 6 実験結果\} while (完了率 $<100\%$); % 順不同
+    \item do \{5 結論\} while (完了率 $<66\%$);
+    \item do \{1 はじめに\} while (完了率 $<66\%$); % ここで「はじめに」に着手
+    \item do \{2 関連研究\} while (完了率 $<66\%$);
+    \item do \{1 はじめに, 2 関連研究, 5 結論\} while (完了率 $<100\%$); % 順不同
+    \item 完了したら、TeX流し込み → 論理構造の調整 → 短縮 → 推敲、と進む。
+\end{itemize}
+    \item 順番を気にせず進むのはなぜ良くないか？先に用語定義・前提・評価尺度などの土台を固めてから反復しないと、後で全章に波及して大修正になってしまい効率が悪い。
+ 
+  }
+   
+ \end{enumerate}
+
+\subsubsection*{採択要件チェックリスト（6項目）}
+
+　採択されるかどうかは「新しいアイデアがあるか」だけで決まらず、だいたい次の要件セットで決まる。
+新規性が弱くても、有用性が強ければ採択される場合もある。
+\begin{itemize}[leftmargin=*, label=$\square$, itemsep=0pt,  parsep=0pt]
+  \item \textbf{問題の重要性と明確さ：}
+        課題が重要で，問題設定（入力・出力・前提・評価指標）が一読で分かる．
+
+  \item \textbf{新規性とギャップの説得力：}
+        従来研究を俯瞰した上で，本研究の差分・新規性（2--4点）が具体的で，
+        その差分が必要な理由（未解決ギャップ）が論理的に説明されている．
+        
+ \item \textbf{実用的有用性（インパクト）：}
+        実環境での価値が明確で，誰に／どんな場面で効くかが示されている．
+        \textbf{ロボット研究では，有用性（実用性）が非常に高い場合，多少新規性が弱くても採択されうるため，}
+        効果（成功率・安全性・運用コスト・開発工数・再現性など）を定量的に主張できる形で示す．       
+
+  \item \textbf{技術的妥当性と追試可能性：}
+        手法が正しく，追試できる粒度で実装・設定・条件が書かれており，
+        仮定・適用範囲・限界も明示されている．
+
+  \item \textbf{実験が強い（不十分だとまず落ちる）：}
+        強いベースラインとの公平な比較に加え，アブレーションや失敗分析で
+        「何が効いたか」と限界が定量的に示されている．
+
+  \item \textbf{分かりやすい提示と信頼性：}
+        構成と図表が理解しやすく，主張が誇張なく誠実で，
+        貢献と有用性（または学術的意義）が伝わる．
+\end{itemize}
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
