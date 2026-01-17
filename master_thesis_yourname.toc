@@ -1,0 +1,55 @@
+\contentsline {chapter}{Abstract}{i}{chapter*.1}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Thesis Organization}{2}{section.1.1}%
+\contentsline {chapter}{\numberline {2}Related Work}{3}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Person Detection Methods Using 2D LiDAR}{3}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Person Following Methods Using 3D LiDAR}{4}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Occlusion-Aware Person Following Methods Using Monocular Cameras}{5}{section.2.3}%
+\contentsline {section}{\numberline {2.4}ReID Method Using Camera and LiDAR}{7}{section.2.4}%
+\contentsline {section}{\numberline {2.5}PointPillars}{8}{section.2.5}%
+\contentsline {section}{\numberline {2.6}ReID3D}{9}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Issues in Conventional Research and Positioning of This Study}{11}{section.2.7}%
+\contentsline {chapter}{\numberline {3}Human-following System Using 3D LiDAR and ReID3D}{12}{chapter.3}%
+\contentsline {section}{\numberline {3.1}System Overview}{12}{section.3.1}%
+\contentsline {section}{\numberline {3.2}System Configuration}{13}{section.3.2}%
+\contentsline {paragraph}{Registration Phase}{13}{paragraph*.3}%
+\contentsline {paragraph}{Following Phase}{14}{paragraph*.4}%
+\contentsline {section}{\numberline {3.3}Software Configuration}{14}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Dataset Construction}{15}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Data Collection}{15}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Annotation}{20}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Data Augmentation}{20}{subsection.3.4.3}%
+\contentsline {section}{\numberline {3.5}Training of PointPillars}{21}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Tracking}{23}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Definition of State Variables and Model}{23}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}Prediction Step}{23}{subsection.3.6.2}%
+\contentsline {subsection}{\numberline {3.6.3}Update Step}{24}{subsection.3.6.3}%
+\contentsline {subsection}{\numberline {3.6.4}Implementation Features}{24}{subsection.3.6.4}%
+\contentsline {chapter}{\numberline {4}Experiments}{26}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Experimental Objectives}{26}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Experimental Methods}{26}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Comparative Experiment on Pedestrian Detection Performance}{27}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Comparative Experiment on Tracking and Re-identification Performance}{27}{subsection.4.2.2}%
+\contentsline {subsubsection}{Comparison Methods}{28}{subsubsection*.15}%
+\contentsline {paragraph}{SiamRPN++ \cite {SiamRPN++}}{28}{paragraph*.16}%
+\contentsline {paragraph}{DiMP \cite {DiMP}}{28}{paragraph*.17}%
+\contentsline {paragraph}{MixFormer \cite {MixFormer}}{28}{paragraph*.18}%
+\contentsline {paragraph}{OCL-RPF \cite {OCL-RPF}}{28}{paragraph*.19}%
+\contentsline {subsubsection}{Evaluation Metrics}{28}{subsubsection*.20}%
+\contentsline {paragraph}{Average Overlap (AO)}{29}{paragraph*.21}%
+\contentsline {paragraph}{F-score}{29}{paragraph*.22}%
+\contentsline {paragraph}{Avg Max Recall (AMR)}{29}{paragraph*.23}%
+\contentsline {section}{\numberline {4.3}Experimental Results}{30}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Comparative Experiment on Pedestrian Detection Performance}{30}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Quantitative Evaluation on the TPT-Bench Dataset}{32}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}Discussion}{36}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Comparative Experiment on Pedestrian Detection Performance}{36}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Comparative Experiment on Tracking and Re-identification Performance}{36}{subsection.4.4.2}%
+\contentsline {subsubsection}{Impact of Online Adaptation Capability on Re-identification Performance}{37}{subsubsection*.30}%
+\contentsline {subsubsection}{Limitations of Tracking Prediction by Kalman Filter and Comparison with DiMP}{37}{subsubsection*.31}%
+\contentsline {subsubsection}{Comprehensive Discussion on Target Disappearance and Recovery Capability}{38}{subsubsection*.32}%
+\contentsline {chapter}{\numberline {5}Conclusion}{39}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Conclusion}{39}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Future Work}{39}{section.5.2}%
+\contentsline {chapter}{References}{41}{section.5.2}%
+\contentsline {chapter}{Publications Related to This Thesis}{43}{chapter*.34}%

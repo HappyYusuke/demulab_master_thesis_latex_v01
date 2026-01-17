@@ -3,7 +3,7 @@
 %%%%% 使い方 %%%%%
 % 修論の場合は何も変更しないでコンパイルする。
 % AR投稿論文は次行のthesisをarに変えてコンパイルする。
-\def\KITMODE{ar} % ← ar にしたければ thesis を ar に変える
+\def\KITMODE{thesis} % ← ar にしたければ thesis を ar に変える
 %\def\KITMODE{ar} % ← 修論にしたければ ar を thesis に変える
 \PassOptionsToPackage{dvipdfmx}{graphicx}
 \documentclass[\KITMODE]{kitinteract} 
@@ -71,9 +71,9 @@
 % \kitlogowidth{28mm}
 
 % ----- 修論用 -----
-\kittitle{Your Master's Thesis Title}
-\kitauthor{Your Name}
-%\kitstudentid{20XX0000}
+\kittitle{Development of a Human Following System Using 3D LiDAR and ReID3D}
+\kitauthor{Yusuke Kanazawa}
+\kitstudentid{6400686}
 \kitsupervisor{Prof. Kosei Demura}
 \kitsubmissiondate{January 2026}
 
@@ -148,8 +148,8 @@
 \thesisonly{%
     \publicationspage{%
     \begin{enumerate}
-       \item Your related publication 1.
-       \item Your related publication 2.
+       \item Y Kanazawa, K Demura. Development of a Human Tracking System Using 2D LiDAR and YOLOv10 (2D LiDAR と YOLOv10 を用いた人追従システムの開発). J. Robot. Soc. Jpn. (日本ロボット学会誌). 2024;42:1D4-06. (in Japanese).
+       \item Y Kanazawa, K Demura. Development of a Human Following System Using 3D LiDAR and ReID3D (3D LiDAR と ReID3D を用いた人追従システムの開発). J. Robot. Soc. Jpn. (日本ロボット学会誌). 2025;43:1I5-04. (in Japanese).
     \end{enumerate}
     }
 }

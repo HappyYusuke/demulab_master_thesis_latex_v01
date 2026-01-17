@@ -15,28 +15,80 @@ The first experiment is a quantitative evaluation of the pedestrian detection ac
 In addition, for the experimental equipment, we used a laptop PC equipped with an NVIDIA RTX 3070 (8GB) GPU.
 
 \subsection{Comparative Experiment on Pedestrian Detection Performance}
-In this experiment, we evaluate the pedestrian detection performance of PointPillars using the validation dataset of 4,500 frames constructed in Section 3.4. As evaluation metrics, we adopted BEV (Bird's Eye View) AP and 3D AP, which are widely used in object detection.
 
-BEV AP is a metric calculated based on the area overlap with the ground truth. This is done by projecting the estimated 3D bounding box onto a 2D plane (bird's eye view). On the other hand, 3D AP is calculated based on the overlap ratio (IoU: Intersection over Union) of the 3D position and volume of the bounding box. In this experiment, the threshold for IoU was set to 0.5, following the general standard for pedestrian detection.
+In this experiment, we evaluate the pedestrian detection performance of PointPillars using the 4,500-frame validation dataset constructed in Section 3.4.
 
-To set up the environment for the inference experiment, we adopted a specific data flow. The input data, which are binary point cloud files, are converted into ROS 2 topics and published. The detection model then subscribes to these topics. The publishing frequency of the topics is set to 10 Hz. In addition, to verify the effectiveness of our method, we used the standard model of the ros2\_tao\_pointpillars package as a baseline for comparison. This is an existing open-source implementation.
+As evaluation metrics, we adopted BEV (Bird’s Eye View) AP and 3D AP, which are widely used in object detection. BEV AP is a metric calculated based on the area overlap with the ground truth, obtained by projecting the estimated 3D bounding box onto a 2D plane (bird's eye view). On the other hand, 3D AP is calculated based on the overlap of the 3D position and volume (IoU: Intersection over Union) of the bounding box. In this experiment, the IoU threshold was set to 0.5, following general standards for pedestrian detection.
+
+Regarding the experimental setup for inference, we adopted a format where input data is converted from binary point cloud files and published as ROS 2 topics, which are then subscribed to by the detection model. The publishing frequency of the topics was set to 10 Hz. Furthermore, to verify the effectiveness of our method, we used a model available in the ros2\_tao\_pointpillars package, which is an existing open-source implementation, as a comparison target.
 
 \subsection{Comparative Experiment on Tracking and Re-identification Performance}
-In this experiment, we evaluate the tracking and re-identification performance of the entire human-following system we constructed. We used a public dataset for this evaluation. Specifically, we adopted TPT-BENCH \cite{TPT-Bench} as the evaluation dataset.
 
-There are existing datasets related to robot perception, such as RoboSense \cite{RobSense} and JRDB \cite{JRDB-PanoTrack}. However, the main focus of this research is the task of continuously tracking a specific person (Target Person Tracking: TPT). Therefore, we selected TPT-BENCH because it is a dataset specialized for TPT and is optimal for this evaluation.
+In this experiment, we evaluate the tracking and re-identification performance of the entire person-following system we constructed, using a public dataset. For the evaluation dataset, we selected TPT-BENCH \cite{TPT-Bench}. This is a large-scale dataset that specializes in the robot Target Person Tracking (TPT) task and includes 3D LiDAR data, which is crucial for this study. Compared to existing datasets such as RoboSense \cite{RobSense} and JRDB-PanoTrack \cite{JRDB-PanoTrack}, TPT-BENCH includes long-term tracking in diverse environments (indoor/outdoor, lighting changes, and crowded environments). Therefore, it is optimal for evaluating re-identification ability.
 
-TPT-BENCH includes three types of sensor information: LiDAR point clouds, RGB images, and depth information. It is a large-scale dataset collected in diverse environments, such as indoor and outdoor settings, as well as day and night conditions.
+In this study, we selected "Sequence 0015" from the 48 available sequences as the subject of evaluation. The specifications of this sequence are as follows. The total duration where Ground Truth exists is 202.1 seconds. Within this, the total disappearance time, during which the target becomes untrackable, is 24.3 seconds, and the number of disappearances is recorded as 28 times. Regarding environmental characteristics, although the target's clothing does not change within the sequence, the lighting conditions tend to shift from standard brightness to a dim state.
 
-We use three metrics for evaluation: Average Overlap (AO), F1-score, and Avg Max Recall (AMR).
+Details regarding the comparison methods and evaluation metrics used in this experiment are described in Section \ref{baseline} and Section \ref{evaluation}, respectively.
 
-AO represents the average value of the Intersection over Union (IoU) between the estimated bounding boxes and the ground truth. The F1-score is the harmonic mean of tracking Precision and Recall. This metric evaluates the balance between the accuracy and the completeness of the detection. AMR indicates the proportion of how successfully the system kept tracking the target correctly. It is a metric used to measure the robustness of the tracking.
+\subsubsection{Comparison Methods} \label{baseline} We selected the following methods for comparison in this experiment.
+
+\paragraph{SiamRPN++ \cite{SiamRPN++}} This is a representative method for Visual Object Tracking (VOT) using Siamese networks. It solves the problem of position invariance caused by padding in deep networks (such as ResNet) by using a spatial sampling strategy. We adopt this as a baseline for image-based Single Object Tracking (SOT) methods that do not use depth information such as LiDAR.
+
+\paragraph{DiMP \cite{DiMP}} This is a method that optimizes a model to distinguish between the target and the background online during inference. Addressing the issue that conventional Siamese-based methods cannot utilize background information, it achieves high discrimination ability by incorporating an optimization process that minimizes discriminative loss directly into the network. We use this for comparison as a representative of SOT methods that use a discriminative approach.
+
+\paragraph{MixFormer \cite{MixFormer}} This is a tracking framework based on Transformers, which has been gaining attention in recent years. By using the Mixed Attention Module (MAM), it performs feature extraction and the integration of target information simultaneously. This allows the model to learn the dense interaction between the target and the search area. We adopt this to confirm the performance of Transformer-based SOT methods.
+
+\paragraph{OCL-RPF \cite{OCL-RPF}} This is a tracking method based on Person Re-identification (ReID), specialized for Robot Person Following (RPF). To address the challenge that conventional fixed models cannot adapt to environmental changes, it has a mechanism to dynamically update the feature extractor using Online Continual Learning (OCL). We use this for comparison as a method that aims for "long-term tracking from a robot perspective," similar to this study.
+
+\subsubsection{Evaluation Metrics} \label{evaluation}
+In this experiment, we use Average Overlap (AO), F-score, and Avg Max Recall (AMR), which are adopted in TPT-BENCH \cite{TPT-Bench}, as quantitative evaluation metrics.
+
+First, let $P_t$ be the predicted bounding box and $G_t$ be the ground truth in each frame $t$. We define their Intersection over Union as $\text{IoU}_t$.
+
+\begin{equation}
+ \text{IoU}_t = \frac{|P_t \cap G_t|}{|P_t \cup G_t|}
+\end{equation}
+
+The definitions of each metric are described below.
+
+\paragraph{Average Overlap (AO)}
+AO is defined as the average of $\text{IoU}_t$ over all frames where the target exists. Let $N$ be the total number of frames; AO is expressed as follows:
+
+\begin{equation}
+ \text{AO} = \frac{1}{N} \sum_{t=1}^{N} \text{IoU}_t
+\end{equation}
+
+\paragraph{F-score}
+We use Tracking Precision ($Pr$) and Tracking Recall ($Re$) to calculate the F-score.
+We define a prediction satisfying the IoU threshold as a True Positive, and let $N_{TP}$ be the number of such frames. Also, we define $N_{pred}$ as the total number of frames where the system output a prediction, and $N_{GT}$ as the total number of frames where the target actually exists. In this case, $Pr$ and $Re$ are expressed as follows:
+
+\begin{equation}
+ Pr = \frac{N_{TP}}{N_{pred}}, \quad Re = \frac{N_{TP}}{N_{GT}}
+\end{equation}
+
+The F-score is defined as the harmonic mean of $Pr$ and $Re$.
+
+\begin{equation}
+ \text{F-score} = \frac{2 \cdot Pr \cdot Re}{Pr + Re}
+\end{equation}
+
+$Pr$ represents the accuracy of the prediction (low false positives), and $Re$ represents the target detection rate (low missed detections). The F-score is a metric that evaluates these comprehensively.
+
+\paragraph{Avg Max Recall (AMR)}
+AMR is the average of the maximum $Re$ achievable under the condition that no False Positives are allowed ($Pr = 100\%$), calculated over multiple IoU thresholds. Let $\Omega$ be the set of IoU thresholds, and $Re_{max}(\lambda)$ be the maximum recall at a certain threshold $\lambda \in \Omega$. AMR is defined by the following equation:
+
+\begin{equation}
+ \text{AMR} = \frac{1}{|\Omega|} \sum_{\lambda \in \Omega} Re_{max}(\lambda) \quad \text{s.t.} \quad Pr = 1
+\end{equation}
+
+This metric evaluates the ability to maintain tracking without false tracking.
+
+\clearpage
 
 \section{Experimental Results}
 \subsection{Comparative Experiment on Pedestrian Detection Performance}
-The experimental results for pedestrian detection are shown in Table \ref{Evaluation results of pedestrian detection.}. For ros2\_tao\_pointpillars, the BEV AP was 35.47\% and the 3D AP was 18.50\%. In contrast, our method achieved a BEV AP of 79.86\% and a 3D AP of 61.59\%. This means that our method significantly outperformed the conventional model in both metrics.
-
-False detections were observed in both models. In ros2\_tao\_pointpillars, we observed cases where two pedestrians were detected as a single bounding box. On the other hand, our method was generally able to detect pedestrians successfully. However, there was a phenomenon where pedestrians were not detected when they stopped and stood upright.
+The experimental results for pedestrian detection are shown in Table \ref{Evaluation results of pedestrian detection.}.
+In contrast to ros2\_tao\_pointpillars, which achieved a BEV AP of 35.47\% and a 3D AP of 18.50\%, our method achieved a BEV AP of 79.86\% and a 3D AP of 61.59\%. This indicates that our method significantly outperformed the conventional model in both metrics.
 
 \begin{table}[h]
   \centering
@@ -49,11 +101,178 @@ False detections were observed in both models. In ros2\_tao\_pointpillars, we ob
   \end{tabular}
 \end{table}
 
+Figure \ref{training_curves} shows the evolution of loss functions and learning rate during this experiment. Here, in addition to the total loss (Figure \ref{train_loss}), we present its breakdown: bounding box classification loss (Figure \ref{loss_cls}), localization loss (Figure \ref{loss_loc}), and direction estimation loss (Figure \ref{loss_dir}).
 
+First, a common feature observed in all graphs is a temporary spike in loss around Step 47,000. This behavior is attributed to resuming the training from the 501st epoch. However, apart from this local fluctuation, the overall loss shows a decreasing trend as training progresses, indicating that the training proceeded appropriately.
+
+Looking at the detailed trends, for Figure \ref{train_loss}, \ref{loss_cls}, and \ref{loss_loc}, the loss drops rapidly from the beginning of training (Step 0) and continues to decrease steadily until around Step 700. Thereafter, although the rate of decrease becomes more gradual, a trend toward steady convergence was observed.
+
+On the other hand, the Direction Loss (Figure \ref{loss_dir}) showed a different trend compared to the other losses. The decrease remained gradual until around Step 25,000, but the decreasing trend became stronger after that. The steady decrease continued even after resuming training, and from around Step 69,000, the rate of decrease slowed down, becoming almost flat (a state of convergence).
+
+\clearpage
+
+\begin{figure}[h]
+    \centering
+    % --- Row 1 ---
+    \subfloat[Total training loss]{
+        \includegraphics[width=0.48\linewidth]{figs/fig_train_loss.png}
+        \label{train_loss}
+    }
+    \hfill % Adjust spacing automatically
+    \subfloat[Classification loss]{
+        \includegraphics[width=0.48\linewidth]{figs/fig_loss_cls.png}
+        \label{loss_cls}
+    } \\ % Line break
+    \vspace{3mm} % Adjust vertical spacing
+
+    % --- Row 2 ---
+    \subfloat[Localization loss]{
+        \includegraphics[width=0.48\linewidth]{figs/fig_loss_loc.png}
+        \label{loss_loc}
+    }
+    \hfill
+    \subfloat[Direction loss]{
+        \includegraphics[width=0.48\linewidth]{figs/fig_loss_dir.png}
+        \label{loss_dir}
+    } \\
+
+    \caption{Evolution of loss functions and learning rate.}
+    \label{training_curves}
+\end{figure}
+
+Figure \ref{bbox} shows examples of pedestrian detection. Note that the validation data used here contains three pedestrians. First, regarding trends common to both models, although pedestrians were generally detected, we confirmed that missed detections (False Negatives) occurred in some scenes. Also, false detections (False Positives), where non-human objects such as chairs or walls were mistakenly detected as pedestrians, were occasionally observed.
+
+Focusing on the characteristics of each model, in the conventional method \texttt{ros2\_tao\_pointpillars}, as shown in Figure \ref{eval_related}, we observed cases where two pedestrians close to each other could not be separated and were detected together as a single bounding box. On the other hand, in the proposed method, as shown in Figure \ref{eval_harrp}, individual pedestrians were correctly separated and detected, yielding good detection results overall. However, as a specific issue, we confirmed a phenomenon where detection failed when the pedestrian was stationary and standing upright.
+
+\clearpage
+
+\begin{figure}[h]
+    \centering
+    % --- Left Figure ---
+    \subfloat[Detection results using the conventional model.]{
+        \includegraphics[width=0.48\linewidth]{figs/eval_pp_related.png}
+        \label{eval_related}
+    }
+    \hfill % Automatically adjusts space between figures
+    % --- Right Figure ---
+    \subfloat[Result of the optimized PointPillars (Ours).]{
+        \includegraphics[width=0.48\linewidth]{figs/eval_pp_harrp.png}
+        \label{eval_harrp}
+    }
+    
+    \caption{Examples of pedestrian detection by the conventional model and Ours.}
+    \label{bbox}
+\end{figure}
+
+\subsection{Quantitative Evaluation on the TPT-Bench Dataset}
+The experimental results using the TPT-Bench dataset are shown in Table \ref{tpt-bench}. First, we discuss the trends of the overall metrics. In this experiment, the AMR was 0.00\% for all methods. Also, focusing on the relationship between AO (Average Overlap) and F-score, we confirmed a tendency that the F-score shows higher values than AO in all methods.
+
+Next, we compare the performance of each method. Regarding SiamRPN++ and MixFormer, both AO and F-score were below 10\%, indicating that sufficient tracking performance was not obtained in Sequence 0015. In contrast, DiMP, OCL-RPF, and the proposed method all achieved scores of 15\% or higher, showing relatively good performance. Among them, DiMP achieved results exceeding 22\% in both AO and F-score. Notably, OCL-RPF recorded extremely high values exceeding 72\% in both metrics, showing an overwhelming performance difference compared to other comparison methods and the proposed method.
+
+\clearpage
+
+\begin{table}[h]
+  \centering
+  \caption{Evaluation results of tracking metrics (AO, F1-score, and AMR) on TPT-Bench.}
+  \label{tpt-bench}
+  \begin{tabular}{ccccc} \toprule
+    Method & AO (\%) & F-score (\%) & AMR (\%) & Sensor \\ \midrule
+    SiamRPN++ & 3.32 & 5.48 & 0.00 & Camera \\
+    DiMP & 22.65 & 27.05 & 0.00 & Camera \\
+    MixFormer & 3.93 & 5.41 & 0.00 & Camera \\
+    OCL-RPF & 72.71 & 77.11 & 0.00 & Camera \\
+    Ours & 15.87 & 16.12 & 0.00 & 3D LiDAR \\ \bottomrule
+  \end{tabular}
+\end{table}
+
+Tracking results using our method on the TPT-Bench dataset are shown in Figure \ref{tracking} and Figure \ref{reid}.
+In each figure, the left side shows the visualization of point cloud data from the 3D LiDAR, and the right side shows the camera image at the same timestamp.
+
+In the 3D LiDAR point cloud images, red bounding boxes indicate the pedestrian detection results by PointPillars, and green bounding boxes indicate the target tracking results estimated by ReID3D and the Kalman filter. Above the tracking box, the tracking ID and the feature vector similarity (Sim) with the target, output by ReID3D, are displayed. Additionally, the gray spheres displayed around the detected pedestrians are markers indicating that the feature vector extraction process by ReID3D has been performed.
+
+Figure \ref{tracking} shows the sequential tracking results in a situation where the target is hidden by obstacles in the environment and becomes temporarily unobservable. First, at the time of Figure \ref{tracking1}, the target is visible and is being tracked normally. Next, at the time of Figure \ref{tracking2}, the target has moved behind an obstacle, resulting in an occlusion state where direct detection by the LiDAR sensor is impossible. However, since this system performs state estimation using a Kalman filter, it is possible to predict the target's position even during periods when observation data is unavailable. As a result, as shown in Figure \ref{tracking3}, it was confirmed that the system prevented the target from being lost until re-appearance, achieving robust tracking.
+
+Figure \ref{reid} shows an excerpt of the process of recovering from a temporary tracking interruption through re-identification using ReID3D. In the transition from Figure \ref{reid1} to Figure \ref{reid2} in this sequence, the system loses sight of the target due to a missed detection, and the tracking state shifts to "Lost." However, subsequently, as shown in Figure \ref{reid3}, even in a situation where multiple other pedestrians were present, re-identification by ReID3D functioned correctly. Consequently, the system successfully re-identified the target and resumed tracking.
+
+\begin{figure}[h]
+    \centering
+    % --- 1st Image ---
+    \subfloat[Tracking before occlusion.]{
+        \includegraphics[width=1.0\linewidth]{figs/tracking1.png}
+        \label{tracking1}
+    } \\ % Line break
+    \vspace{5mm}
+    
+    % --- 2nd Image ---
+    \subfloat[Tracking during occlusion.]{
+        \includegraphics[width=1.0\linewidth]{figs/tracking2.png}
+        \label{tracking2}
+    } \\ % Line break
+    \vspace{5mm}
+
+    % --- 3rd Image ---
+    \subfloat[Tracking after occlusion.]{
+        \includegraphics[width=1.0\linewidth]{figs/tracking3.png}
+        \label{tracking3}
+    }
+    
+    \caption{Sequential tracking results showing the target before, during, and after occlusion.}
+    \label{tracking}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    % --- 1st Image ---
+    \subfloat[Target tracking in progress.]{
+        \includegraphics[width=1.0\linewidth]{figs/reid1.png}
+        \label{reid1}
+    } \\ % Line break
+    \vspace{5mm}
+    
+    % --- 2nd Image ---
+    \subfloat[Target lost.]{
+        \includegraphics[width=1.0\linewidth]{figs/reid2.png}
+        \label{reid2}
+    } \\ % Line break
+    \vspace{5mm}
+    
+    % --- 3rd Image ---
+    \subfloat[Target re-identified.]{
+        \includegraphics[width=1.0\linewidth]{figs/reid3.png}
+        \label{reid3}
+    }
+    
+    \caption{Process of recovering the target from a lost state.}
+    \label{reid}
+\end{figure}
+
+\clearpage
 
 \section{Discussion}
-From the experimental results, we confirmed that PointPillars, which was optimized for the point cloud characteristics of the Livox 3D LiDAR, demonstrated pedestrian detection performance that significantly exceeded that of the conventional model. We believe this is because the training using the unique dataset proposed in this study enabled feature extraction adapted to the sensor characteristics. Consequently, the model effectively overcame the domain gap in pedestrian detection.
+\subsection{Comparative Experiment on Pedestrian Detection Performance}
+From the experimental results, it was confirmed that PointPillars, which was optimized for the point cloud characteristics of the Livox 3D-LiDAR, demonstrated pedestrian detection performance that significantly exceeded that of the conventional model. This is considered to be because the training using the custom dataset proposed in this study enabled feature extraction adapted to the sensor characteristics, effectively overcoming the domain gap in pedestrian detection.
 
-However, we observed differences in the tendency of false detections between the two models. In ros2\_tao\_pointpillars, there were cases where pedestrians close to each other were incorrectly detected as a single bounding box. This may be influenced by the fact that the publicly available pre-trained model included annotations where two pedestrians were represented by a single bounding box.
+However, differences were observed between the two models regarding the tendency of false detections. In \texttt{ros2\_tao\_pointpillars}, cases were seen where pedestrians in close proximity were mistakenly detected as a single bounding box. This may be influenced by the fact that in the publicly available pre-trained model, annotations likely existed where two pedestrians were represented by a single bounding box. On the other hand, in our method, a phenomenon was observed where pedestrians were not detected when they were stationary and standing upright. This is thought to be because the dataset contained a large number of point clouds representing pedestrians in a moving state.
 
-On the other hand, in our proposed method, we observed a phenomenon where the model failed to detect pedestrians when they were stopped and standing upright. We consider that this is because the dataset contained a large number of point clouds where pedestrians were in motion.
+\subsection{Comparative Experiment on Tracking and Re-identification Performance}
+The experimental results show that our method achieved tracking and re-identification performance surpassing the comparison targets, SiamRPN++ and MixFormer. SiamRPN++ basically adopts a Local Search approach that searches the vicinity of the estimated position from the previous frame, and MixFormer is a method that tracks by interacting the features of the target template and the search region. Since these methods rely on continuous visual information, their tracking performance tended to degrade significantly in environments where target disappearance occurs due to long-term occlusion, such as in Sequence 0015, or where visual features deteriorate due to lighting changes.
+
+In contrast, our method adopts an approach that generates feature vectors of pedestrians from 3D LiDAR point clouds and performs re-identification (ReID). By utilizing point cloud information that is not affected by lighting conditions and performing detection-based global matching, our method demonstrated higher re-identification performance than the aforementioned comparison methods. As a result, tracking recovery after losing the target became possible, which is considered to have contributed to the improvement of the score in the quantitative evaluation.
+
+\subsubsection{Impact of Online Adaptation Capability on Re-identification Performance}
+The primary factor why the score of the proposed method did not reach the level of OCL-RPF lies in the difference in the target model update mechanism. OCL-RPF possesses an "Online Continual Learning" mechanism, which sequentially learns the target's appearance that changes from moment to moment during the tracking process (such as changes in posture or transitions in viewing angle) and dynamically adapts the model. This makes it possible to perform re-identification with high accuracy even if the target reappears with features different from the initial frame.
+
+In contrast, our method performs ReID based on the similarity between the initial feature vector output from a pre-trained fixed model and the feature vector at the time of re-detection. Therefore, in re-identification after a loss, the system could not determine that the target was the same person, which likely caused a decisive difference in the success rate of tracking recovery.
+
+\subsubsection{Limitations of Tracking Prediction by Kalman Filter and Comparison with DiMP}
+Next, we discuss from the perspective of the tracking algorithm why our method fell short of DiMP (AO score: 15.87\% vs 22.65\%), which is a general-purpose tracker without a ReID function.
+
+In our method, a Kalman filter is adopted for the dynamic tracking of the target, performing state estimation assuming a linear motion model such as constant velocity linear motion. However, the sequence of TPT-Bench used in this experiment includes non-linear behaviors due to the difference in movement between the pedestrian and the robot. In such scenes, a divergence (prediction error) tends to occur between the predicted position by the Kalman filter based on the linear model and the actual target position. Furthermore, the deviation in the predicted position becomes a factor that induces inconsistencies in the search region (Region of Interest) in the subsequent ReID step or errors in data association (ID assignment). As a result, even if the tracking itself continues, the overlap of the bounding box decreases due to prediction lag or overshoot, which is inferred to have led to the low AO score.
+
+On the other hand, DiMP integrates IoU-Net. It does not solely rely on prediction by a motion model for target position estimation but performs regression to maximize the bounding box overlap (IoU) directly from image features. This allows for high-precision rectangle generation that "sticks" to the features in the image, even if the target shows irregular movements. In other words, the qualitative difference in tracking accuracy between our method's "motion prediction by Kalman filter" and DiMP's "learning-based rectangle regression" was reflected in the numerical results.
+
+\subsubsection{Comprehensive Discussion on Target Disappearance and Recovery Capability}
+Finally, we discuss the recovery capability throughout the experiment.
+The background behind OCL-RPF (AO 72.71\%) recording an overwhelming score includes not only its adaptability through online continual learning but also its possession of a powerful global search capability that re-searches for the target from the entire image when the target is lost.
+
+Our method is also equipped with a ReID function and is designed to perform a re-search by ReID when the target is not found within the prediction range of the Kalman filter. However, as mentioned above, due to the limits of the Kalman filter's prediction accuracy, if the occlusion continues for a long time and the target's motion deviates significantly from the prediction, the risk increases that the system cannot correctly narrow down the area to re-search or links the target to an incorrect cluster.

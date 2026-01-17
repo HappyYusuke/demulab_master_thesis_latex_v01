@@ -36,7 +36,7 @@ We adopted Robot Operating System 2 (ROS 2) Foxy Fitzroy as the middleware. Each
 
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[height=100mm,clip]{figs/Software_stack.png}
+    \includegraphics[height=120mm,clip]{figs/Software_stack.png}
     \caption{Software stack.}
     \label{Software stack.}
     \end{center}
@@ -52,7 +52,7 @@ In this experiment, we specifically designed and fabricated the custom stand sho
 
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[height=90mm,clip]{figs/data_collection_room.JPG}
+    \includegraphics[height=70mm,clip]{figs/data_collection_room.JPG}
     \caption{Data collection environment.}
     \label{Data collection environment.}
     \end{center}
@@ -61,23 +61,21 @@ In this experiment, we specifically designed and fabricated the custom stand sho
 \begin{figure*}[h]
   \begin{minipage}[b]{0.5\linewidth}
     \centering
-    \includegraphics[keepaspectratio, width=6cm, angle=-90]{figs/lidar.JPG}
+    \includegraphics[keepaspectratio, width=5cm, angle=-90]{figs/lidar.JPG}
     \caption{LiDAR and custom stand.}
     \label{LiDAR and custom stand.}
   \end{minipage}
   \begin{minipage}[b]{0.5\linewidth}
     \centering
-    \includegraphics[keepaspectratio, height=6cm]{figs/kachaka_lidar.JPG}
+    \includegraphics[keepaspectratio, height=5cm]{figs/kachaka_lidar.JPG}
     \caption{Height comparison.}
     \label{Height comparison.}
   \end{minipage}
 \end{figure*}
 
-Five subjects participated in the data collection. As shown in Figure. \ref{Overview of subjects captured for data collection (1/2).} and Figure. \ref{Overview of subjects captured for data collection (2/2).}, measurements were taken while each subject wore a variety of different outfits. The subjects walked around the LiDAR following five types of walking patterns shown in Figure. \ref{Walking patterns in data collection.}. Through this process, we collected a total of 12 sets of data. From each of these sets, we randomly extracted 85 frames. As a result, we obtained a total of 1,020 frames of data to be used for training.
+Five subjects participated in the data collection. The appearances of the subjects are shown in Figure \ref{Overview of subjects captured for data collection (1/2).} and Figure \ref{Overview of subjects captured for data collection (2/2).}. To ensure visual diversity of pedestrians in the dataset, the subjects wore various types of clothing suitable for different seasons and attributes, such as T-shirts, long-sleeve shirts, hoodies, and work uniforms. Furthermore, to reproduce diverse pedestrian appearances in real-world environments, measurements were taken with various combinations of daily items. These included not only clothing but also accessories such as backpacks, suitcases, tote bags, and sunglasses.
 
-Furthermore, to construct a validation dataset, we collected data from three different subjects in a different environment. From this data, we randomly extracted 200 frames in the same manner. By combining these, we constructed a final dataset consisting of a total of 1,220 frames.
-
-\clearpage
+The subjects walked around the LiDAR following five walking patterns shown in Figure \ref{Walking patterns in data collection.}, and a total of 12 data sets were collected. From each set, 85 frames were randomly extracted, resulting in a total of 1,020 frames of training data. Additionally, for the validation dataset, data were collected from three different subjects in a different environment, and 200 frames were randomly extracted in the same manner. Combining these, a dataset consisting of a total of 1,220 frames was constructed.
 
 %===========================================================
 % 1ページ目：前半 20枚
@@ -116,8 +114,6 @@ Furthermore, to construct a validation dataset, we collected data from three dif
     \caption{Overview of subjects captured for data collection (2/2).}
     \label{Overview of subjects captured for data collection (2/2).}
 \end{figure}
-
-\clearpage
 
 \begin{figure}[htbp]
     \centering
@@ -178,11 +174,11 @@ Table \ref{Data augmentation parameters.} shows the specific parameter settings 
 \begin{figure}[htbp]
     \centering
     \subfloat[Original point cloud.]{
-        \includegraphics[width=0.45\linewidth]{figs/PointCloud_origin.png}
+        \includegraphics[width=0.48\linewidth]{figs/PointCloud_origin.png}
     }
     \hfill
     \subfloat[Augmented point cloud.]{
-        \includegraphics[width=0.45\linewidth]{figs/PointCloud_aug.png}
+        \includegraphics[width=0.48\linewidth]{figs/PointCloud_aug.png}
     }
     \hfill
     \caption{Examples of data augmentation.}
@@ -232,8 +228,6 @@ The One Cycle Policy is a method that first increases the learning rate from an 
 In addition, we adjusted the momentum in the range of 0.95 to 0.85. This change is inversely correlated with the learning rate. This aims to improve the efficiency of parameter updates.
 
 Furthermore, we introduced gradient clipping (Gradient Norm Clip) to ensure the stability of the training. This process limits the magnitude of the gradient when its L2 norm, calculated by backpropagation, exceeds a certain threshold (10.0 in this experiment). This prevents sudden changes in parameters, such as gradient explosion, and achieves stable training.
-
-\clearpage
 
 \begin{table}[h]
   \centering
@@ -336,8 +330,6 @@ In this step, we correct the predicted values using the observation values $\mat
     \mathbf{P}_{k|k} = (\mathbf{I} - \mathbf{K}_k \mathbf{H}) \mathbf{P}_{k|k-1}
     \end{equation}
 \end{itemize}
-
-\clearpage
 
 \subsection{Implementation Features}
 In this implementation, we address the issue of asynchronous topic reception in the ROS2 environment. Therefore, we do not use a fixed time step. Instead, we dynamically calculate the State Transition Matrix $\mathbf{F}$ using the elapsed time $dt$ from the previous update.
