@@ -6,7 +6,7 @@
 \def\KITMODE{thesis} % ← ar にしたければ thesis を ar に変える
 %\def\KITMODE{ar} % ← 修論にしたければ ar を thesis に変える
 \PassOptionsToPackage{dvipdfmx}{graphicx}
-\documentclass[\KITMODE]{kitinteract} 
+\documentclass[\KITMODE, dvipdfmx]{kitinteract} 
 %%%%%%%%%%%%
 
 \usepackage[caption=false]{subfig}% Support for small, `sub' figures and tables
@@ -73,7 +73,7 @@
 % ----- 修論用 -----
 \kittitle{Development of a Human Following System Using 3D LiDAR and ReID3D}
 \kitauthor{Yusuke Kanazawa}
-%\kitstudentid{20XX0000}
+\kitstudentid{6400686}
 \kitsupervisor{Prof. Kosei Demura}
 \kitsubmissiondate{January 2026}
 
@@ -111,7 +111,6 @@
 
 \chapter{Introduction}
 \input{1_introduction.tex}
-\clearpage
 
 \chapter{Related Work}
 \input{2_related_work.tex}
@@ -124,7 +123,6 @@
 
 \chapter{Conclusion}
 \input{5_conclusion.tex}
-\clearpage
 
 % 以下の5行は修論謝辞用なのでコメントアウトしています。
 %公聴会が終ってからLCに修論を提出する前にコメントアウトを解除してください。

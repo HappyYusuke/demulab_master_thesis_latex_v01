@@ -2,7 +2,7 @@
 2D LiDARを用いた研究では，取得した水平断面の点群データをクラスタリングし，脚部や
 胴体の断面形状として検出した後，カルマンフィルタ等を用いて時系列的な追跡を行う
 手法が多い．
-Arrasら\cite{Using Boosted Features for the Detection of People in 2D Range Data}は
+Arrasら\cite{2D LiDAR}は
 、2Dレーザーレンジファインダ（LRF）から得られる平面スキャンデータを用いて、
 複雑な環境下でもロバストに人物を検出する手法を提案している。従来の多くのアプ
 ローチは、人の脚を検出・追跡するために事前に定義された特徴量を使用していたが、
@@ -51,8 +51,7 @@ Arrasら\cite{Using Boosted Features for the Detection of People in 2D Range Dat
 3D LiDARを用いた研究では，3次元空間の点群データから地面点群を除去し，ユークリッド
 クラスタリング等を用いて人物候補となる点群クラスタを抽出した後，カルマンフィルタや
 パーティクルフィルタを用いて追跡するパイプラインが多い。Yanら
-\cite{Online learning for 3D LiDAR-based human detection: experimental analysis 
-of point cloud clustering and classification methods}
+\cite{3D LiDAR}
 は、3D LiDARを搭載した移動ロボットが、走行環境に適応しながら人物検出器をオンライン
 で学習するフレームワークを提案している。3D LiDARを用いた人物検出において、距離に
 よる点群密度の変化や、学習データの作成にかかる人的コスト（アノテーションの手間）は
@@ -96,8 +95,7 @@ LiDARからの距離に応じて疎になる点群密度に対応するため、
 ったが，近年では深層学習（Deep Learning）と追跡アルゴリズムを組み合わせた手法が広
 く研究されている．また，事前学習済みモデルをそのまま用いるのではなく，環境や対象
 に応じて適応するオンライン学習を取り入れたアプローチも提案されている．Koideら
-\cite{Monocular Person Tracking and Identification with On-line Deep Feature 
-Selection for Person Following Robots}
+\cite{Monocular}
 は、LiDARやRGB-Dカメラと比較して安価で導入が容易な「単眼カメラ」のみを用いた移動
 ロボットの人追従システムを提案している。
 
@@ -142,7 +140,7 @@ Channel Features: CCF）を全て使用するのではなく、現在のフレ�
 が存在することが報告されている。
 
 \section{PointPillars}
-Langら\cite{PointPillars: Fast Encoders for Object Detection from Point Clouds}は、
+Langら\cite{PointPillars}は、
 自動運転やロボティクスにおいて極めて重要となる3D物体検出タスクにおいて、推論速度
 と検出精度の両立を目指した新たなネットワークアーキテクチャ「PointPillars」を提案
 している。

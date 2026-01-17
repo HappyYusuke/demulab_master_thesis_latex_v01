@@ -7,7 +7,7 @@
 まず、環境内の歩行者位置を特定するための検出モデルとして、3次元点群物体検出ネット
 ワークである「PointPillars」を採用する。公開されているPointPillarsの学習済みモデル
 は、回転式LiDAR（Velodyne HDL-64E）で収集されたKITTIデータセット
-\cite{Are we ready for autonomous driving? the KITTI vision benchmark suite}
+\cite{KITTI}
 を用いているが、本研究で使用するプリズムスキャン方式のLivox Mid-360とはスキャンパ
 ターンや点群密度が大きく異なる。このセンサ方式の違いに起因するドメインギャップは
 検出精度の低下を招くため、本研究ではLivox Mid-360を用いて独自に構築した歩行者データ
@@ -36,7 +36,7 @@
 
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[height=100mm,clip]{figure/System_overview.png}
+    \includegraphics[height=100mm,clip]{figs/System_overview.png}
     \caption{System overview.}
     \label{System overview.}
     \end{center}
@@ -80,7 +80,7 @@ Fitzroyを採用しており，各DockerコンテナおよびホストPCはROS2�
 
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[height=120mm,clip]{figure/Software_stack.png}
+    \includegraphics[height=120mm,clip]{figs/Software_stack.png}
     \caption{Software stack.}
     \label{Software stack.}
     \end{center}
@@ -100,7 +100,7 @@ Fig.\ref{Height comparison.}に示すロボットのセンサ搭載位置と条�
 
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[height=120mm,clip]{figure/data_collection_room.JPG}
+    \includegraphics[height=120mm,clip]{figs/data_collection_room.JPG}
     \caption{Data collection environment.}
     \label{Data collection environment.}
     \end{center}
@@ -109,13 +109,13 @@ Fig.\ref{Height comparison.}に示すロボットのセンサ搭載位置と条�
 \begin{figure*}[h]
   \begin{minipage}[b]{0.5\linewidth}
     \centering
-    \includegraphics[keepaspectratio, width=7cm, angle=-90]{figure/lidar.JPG}
+    \includegraphics[keepaspectratio, width=7cm, angle=-90]{figs/lidar.JPG}
     \caption{LiDAR and custom stand.}
     \label{LiDAR and custom stand.}
   \end{minipage}
   \begin{minipage}[b]{0.5\linewidth}
     \centering
-    \includegraphics[keepaspectratio, height=7cm]{figure/kachaka_lidar.JPG}
+    \includegraphics[keepaspectratio, height=7cm]{figs/kachaka_lidar.JPG}
     \caption{Height comparison.}
     \label{Height comparison.}
   \end{minipage}
@@ -142,9 +142,9 @@ LiDARの周囲を歩行し、合計で12セットのデータを収集した。�
     \foreach \n [count=\i] in {%
         1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20%
     }{
-        \subfigure[]{
+        \subfloat[]{
             % ↓ ここも念のため確認： \n.JPG の間にスペースがないか
-            \includegraphics[width=0.17\linewidth]{figure/\n.png}
+            \includegraphics[width=0.17\linewidth]{figs/\n.png}
         }%
         \ifnum\numexpr\i-((\i-1)/4)*4\relax=0 \par\vspace{1.0mm} \else \hfill \fi
     }
@@ -161,9 +161,9 @@ LiDARの周囲を歩行し、合計で12セットのデータを収集した。�
     \foreach \n [count=\i] in {%
         21,22,23,24,25,26,27,28,29,30,31,32,33%
     }{
-        \subfigure[]{
+        \subfloat[]{
             % ↓ ここも念のため確認： \n.JPG の間にスペースがないか
-            \includegraphics[width=0.2\linewidth]{figure/\n.png}
+            \includegraphics[width=0.2\linewidth]{figs/\n.png}
         }%
         \ifnum\numexpr\i-((\i-1)/4)*4\relax=0 \par\vspace{1mm} \else \hfill \fi
     }
@@ -174,27 +174,27 @@ LiDARの周囲を歩行し、合計で12セットのデータを収集した。�
 \begin{figure}[htbp]
     \centering
     % --- 1段目（3枚） ---
-    \subfigure[Straight trajectory.]{
-        \includegraphics[width=0.3\linewidth]{figure/traj_straight.png}
+    \subfloat[Straight trajectory.]{
+        \includegraphics[width=0.3\linewidth]{figs/traj_straight.png}
     }
     \hfill
-    \subfigure[Walking around the sensor.]{
-        \includegraphics[width=0.3\linewidth]{figure/traj_curve.png}
+    \subfloat[Walking around the sensor.]{
+        \includegraphics[width=0.3\linewidth]{figs/traj_curve.png}
     }
     \hfill
-    \subfigure[Circular trajectory.]{
-        \includegraphics[width=0.3\linewidth]{figure/traj_circle.png}
+    \subfloat[Circular trajectory.]{
+        \includegraphics[width=0.3\linewidth]{figs/traj_circle.png}
     }
     
     \vspace{2mm} % 上下の段の間隔調整
     
     % --- 2段目（2枚） ---
-    \subfigure[Lateral meandering trajectory.]{
-        \includegraphics[width=0.3\linewidth]{figure/traj_side.png}
+    \subfloat[Lateral meandering trajectory.]{
+        \includegraphics[width=0.3\linewidth]{figs/traj_side.png}
     }
     \quad % 画像間のスペース（\hfillだと端に寄ってしまうため\quad等で調整）
-    \subfigure[Longitudinal meandering trajectory.]{
-        \includegraphics[width=0.3\linewidth]{figure/traj_updown.png}
+    \subfloat[Longitudinal meandering trajectory.]{
+        \includegraphics[width=0.3\linewidth]{figs/traj_updown.png}
     }
     
     \caption{Walking patterns in data collection.}
@@ -204,9 +204,7 @@ LiDARの周囲を歩行し、合計で12セットのデータを収集した。�
 \subsection{アノテーション}
 アノテーション作業の様子をFig. \ref{Annotation using BAT 3D.}に示す。本研究ではアノテ
 ーションに点群データのみを用い、ツールとしてBAT 3Dを採用した。BAT 3Dは、Webブラウザ上で
-動作するオープンソースツールである3D BAT
-\cite{3D BAT: A Semi-Automatic, Web-based 3D Annotation Toolbox for 
-    Full-Surround, Multi-Modal Data Streams} 
+動作するオープンソースツールである3D BAT \cite{3D BAT} 
 の後継ソフトウェアである。収集した点群データに対し、歩行者（Pedestrian）のバウンディング
 ボックスの付与を行った。BAT 3Dでは、バウンディングボックスを配置すると、
 Fig.\ref{Annotation using BAT 3D.}に示すように画面左側にXYZ各軸方向からの視点（三面図）
@@ -215,7 +213,7 @@ Fig.\ref{Annotation using BAT 3D.}に示すように画面左側にXYZ各軸方�
 
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[width=150mm,clip]{figure/bat-3d.png}
+    \includegraphics[width=150mm,clip]{figs/bat-3d.png}
     \caption{Annotation using BAT 3D.}
     \label{Annotation using BAT 3D.}
     \end{center}
@@ -239,12 +237,12 @@ Fig.\ref{Annotation using BAT 3D.}に示すように画面左側にXYZ各軸方�
 
 \begin{figure}[htbp]
     \centering
-    \subfigure[Original point cloud.]{
-        \includegraphics[width=0.45\linewidth]{figure/PointCloud_origin.png}
+    \subfloat[Original point cloud.]{
+        \includegraphics[width=0.45\linewidth]{figs/PointCloud_origin.png}
     }
     \hfill
-    \subfigure[Augmented point cloud.]{
-        \includegraphics[width=0.45\linewidth]{figure/PointCloud_aug.png}
+    \subfloat[Augmented point cloud.]{
+        \includegraphics[width=0.45\linewidth]{figs/PointCloud_aug.png}
     }
     \hfill
     \caption{Examples of data augmentation.}

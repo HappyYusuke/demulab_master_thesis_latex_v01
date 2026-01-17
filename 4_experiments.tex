@@ -31,12 +31,9 @@ PointPillarsを用い、歩行者検出精度を定量的に評価する。ま�
 \subsection{追跡・再識別性能に関する比較実験}
 本実験では、公開データセットを用い、構築した人追従システム全体の追跡性能および再識別性能
 を評価する。 評価用データセットには、TPT-BENCH
-\cite{TPT-Bench: A Large-Scale, Long-Term and Robot-Egocentric Dataset for 
-Benchmarking Target Person Tracking} を採用した。ロボット知覚に関する既存のデータセット
-としては、RoboSense\cite{RobSense: A Robust Multi-modal Foundation Model for 
-Remote Sensing with Static, Temporal, and Incomplete Data Adaptability} や JRDB
-\cite{JRDB-PanoTrack: An Open-world Panoptic Segmentation and Tracking Robotic 
-Dataset in Crowded Human Environments} などが挙げられる。しかし、本研究の主眼である
+\cite{TPT-Bench} を採用した。ロボット知覚に関する既存のデータセット
+としては、RoboSense\cite{RobSense} や JRDB-PanoTrack
+\cite{JRDB-PanoTrack} などが挙げられる。しかし、本研究の主眼である
 「特定の人物を継続的に追跡するタスク (Target Person Tracking: TPT)」における評価には、
 TPTに特化したデータセットが最適であるためTPT-BENCHを選定した。 TPT-BENCHは、LiDAR点群、
 RGB画像、深度情報の3種類のセンサ情報を含んでおり、屋内・屋外、あるいは日中・夜間といった
