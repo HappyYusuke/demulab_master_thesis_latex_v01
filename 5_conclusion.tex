@@ -1,17 +1,23 @@
-\section{Conclusion}
-In this study, we developed a human-following system using 3D LiDAR. We verified its performance in pedestrian detection, tracking, and re-identification.
+\section{まとめ}
+本研究では、3D-LiDARを用いた人追従システムの開発を行い、歩行者検出性能および追跡・再識別
+性能の検証を行った。 本システムでは、Livox社製3D-LiDARの点群特性に最適化を施した
+PointPillarsを採用し、独自に構築したデータセットで学習を行うことで高精度な歩行者検出器
+を構築した。さらに、ReID3Dを統合することで、オクルージョン（遮蔽）発生後も対象人物を再識別
+可能な人追従システムを実現した。 提案手法の有効性を検証するため、独自データセットおよび
+公開データセットを用いた評価実験を行った結果、最適化を施したPointPillarsが従来モデルを
+大幅に上回る歩行者検出性能を示し、本手法の有用性が確認された。
 
-For this system, we adopted PointPillars, which was optimized for the point cloud characteristics of the Livox 3D LiDAR. By training the model with a custom dataset that we built independently, we successfully constructed a high-precision pedestrian detector. Furthermore, by integrating ReID3D, we realized a human-following system that can re-identify the target person even after occlusion (being hidden by obstacles) occurs.
-
-To verify the effectiveness of the proposed method, we conducted evaluation experiments using both our custom dataset and a public dataset. The results showed that the optimized PointPillars significantly outperformed the conventional model in pedestrian detection. Thus, the usefulness of our method was confirmed.
-
-
-
-\section{Future Work}
-There are two main tasks for future work.
-
-First is the further improvement of pedestrian detection performance. From the experimental results, we confirmed a tendency where the system failed to detect pedestrians when they stopped and stood upright. We believe the cause is that the dataset used for training was dominated by point clouds of moving pedestrians, and data of stationary pedestrians was insufficient. Therefore, we expect to improve the detection performance by constructing a new dataset that includes more point clouds of stopped pedestrians and performing retraining.
-
-Second is the improvement of tracking and re-identification performance. Our system uses a linear Kalman Filter for tracking. However, there remains an issue where tracking becomes difficult when the relative trajectory becomes non-linear due to sudden movements of the pedestrian or the robot. To solve this, we believe that introducing non-linear estimation methods, such as the Extended Kalman Filter (EKF) or the Unscented Kalman Filter (UKF), would be effective.
-
-In addition, ReID3D, which we used as the re-identification model, assumes scenarios like intersection monitoring. It relies on the assumption that the target is far away and the entire body is captured in the point cloud. However, in the human-following task, the distance between the LiDAR and the pedestrian is short. Consequently, situations frequently occur where only a part of the body is measured because the target goes out of the field of view. Therefore, it is necessary to develop a new model that can perform robust re-identification even from short-range and partial point cloud information.
+\section{今後の課題}
+今後の課題として、以下の二点が挙げられる。 第一に、歩行者検出性能のさらなる向上である。
+本実験の結果より、歩行者が停止し直立している場合に検出漏れが発生する傾向が確認された。
+この原因として、学習に使用したデータセットに歩行者が動作している状態の点群が支配的であり、
+静止状態のデータが不足していたことが考えられる。したがって、歩行者が停止している状態の
+点群を拡充したデータセットを新たに構築し、再学習を行うことで、検出性能の改善が見込まれる。
+第二に、追跡および再識別性能の向上である。本システムではトラッキングに線形カルマンフィルタ
+を採用しているが、歩行者やロボットの急激な動作により相対軌跡が非線形となる場面では、
+追従が困難になる課題が残された。この解決策として、拡張カルマンフィルタ (EKF) や
+アンセンテッドカルマンフィルタ (UKF) といった非線形推定手法の導入が有効であると考えられる。
+また、再識別モデルとして用いたReID3Dは、交差点監視などを想定しており、対象との距離が遠く
+全身が点群に含まれることを前提としている。しかし、人追従タスクではLiDARと歩行者の距離が
+近く、画角外れなどにより身体の一部のみしか計測されない状況が頻発する。そのため、近距離
+かつ部分的な点群情報からでもロバストに再識別可能な新たなモデルの開発が必要である。

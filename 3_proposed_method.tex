@@ -1,58 +1,106 @@
-\section{System Overview}
+\section{概要}
+本研究では、全方位3D LiDARを用いた人追従走行において、オクルージョン発生後のロスト
+状態から自律的に復帰するため、LiDARベースの人物再同定モデル「ReID3D」を組み込んだ
+システムを提案する。本システムは、主に「歩行者検出」「追従対象の登録・追跡」「オクル
+ージョン後の再識別」の3つのフェーズから構成される。
 
-In this study, we propose a system that incorporates a LiDAR-based person re-identification model, "ReID3D," to autonomously recover from a "lost state" after an occlusion occurs during person following using an omnidirectional 3D LiDAR. This system is mainly composed of three phases: "pedestrian detection," "registration and tracking of the target," and "re-identification after occlusion."
+まず、環境内の歩行者位置を特定するための検出モデルとして、3次元点群物体検出ネット
+ワークである「PointPillars」を採用する。公開されているPointPillarsの学習済みモデル
+は、回転式LiDAR（Velodyne HDL-64E）で収集されたKITTIデータセット
+\cite{Are we ready for autonomous driving? the KITTI vision benchmark suite}
+を用いているが、本研究で使用するプリズムスキャン方式のLivox Mid-360とはスキャンパ
+ターンや点群密度が大きく異なる。このセンサ方式の違いに起因するドメインギャップは
+検出精度の低下を招くため、本研究ではLivox Mid-360を用いて独自に構築した歩行者データ
+セットを作成し、PointPillarsの再学習（ファインチューニング）を行うことで、
+本システムに適した検出器を構築する。
 
-First, we adopt "PointPillars," which is a 3D point cloud object detection network, as a detection model to identify the positions of pedestrians in the environment. The publicly available pre-trained model of PointPillars uses the KITTI dataset \cite{KITTI} collected with a rotating LiDAR (Velodyne HDL-64E). However, the scan pattern and point cloud density are significantly different from the prism scanning type LiDAR, "Livox Mid-360," used in this study. The domain gap caused by this difference in sensor methods leads to a decrease in detection accuracy. Therefore, in this study, we create an originally constructed pedestrian dataset using the Livox Mid-360 and perform re-training (fine-tuning) of PointPillars. By doing so, we construct a detector suitable for this system.
+システムの具体的な処理フローは次の通りである。まず、再学習されたPointPillarsを用い
+て周囲の歩行者を検出する。追従開始時には、指定された対象の点群からReID3Dを用いて
+特徴量を抽出し、追従対象として登録する。通常時は、検出位置に基づくトラッキングに
+より対象への追従走行を行う。追従中に障害物による遮蔽（オクルージョン）が発生し
+トラッキングが途切れた場合は、再識別フェーズへと移行する。このフェーズでは、
+視野内で検出された全ての歩行者の点群をReID3Dに入力し、事前に登録された対象の特徴量
+と比較照合を行う。これにより、オクルージョン後の環境から追従対象を正しく再識別し、
+追従動作の自律的な再開を実現する。
 
-The specific processing flow of the system is as follows. First, surrounding pedestrians are detected using the re-trained PointPillars. At the start of tracking, features are extracted from the point cloud of the specified target using ReID3D, and the person is registered as the tracking target. During normal operation, the robot follows the target through tracking based on the detected position. If the tracking is interrupted due to occlusion by obstacles during following, the system transitions to the re-identification phase. In this phase, the point clouds of all pedestrians detected within the field of view are input into ReID3D, and they are compared and matched with the features of the target registered in advance. Thereby, the system correctly re-identifies the tracking target from the environment after occlusion and realizes the autonomous resumption of the following operation.
 
 
-
-\section{System Configuration}
-
-Figure. \ref{System overview.} shows the overall configuration of the person following system proposed in this study. This system is built using Robot Operating System 2 (ROS 2) as middleware. For the pedestrian detection model, we adopted ros2\_tao\_pointpillars, which is a ROS 2 implementation of PointPillars. Although Figure. \ref{System overview.} mainly illustrates the processing flow during the execution of following, the operation of this system differs significantly between the "target person registration phase" immediately after the start of following and the subsequent "following phase." Therefore, the details will be described below by dividing them into these two phases.
+\section{システム構成}
+本研究で提案する人追従システムの全体構成を Fig. \ref{System overview.} に示す。
+本システムは Robot Operating System 2 (ROS 2) をミドルウェアとして構築されており、
+歩行者検出モデルには、PointPillars の ROS 2 実装である ros2\_tao\_pointpillars 
+を採用した。 Fig. \ref{System overview.} は主に追従実行時における処理フローを示し
+ているが、本システムの動作は、追従開始直後の「追従対象者の登録フェーズ」と、その後
+の「追従フェーズ」で処理内容が大きく異なる。したがって、以下ではこれら2つのフェーズ
+に分けて詳細を述べる。
 
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[height=100mm,clip]{figs/System_overview.png}
+    \includegraphics[height=100mm,clip]{figure/System_overview.png}
     \caption{System overview.}
     \label{System overview.}
     \end{center}
 \end{figure*}
 
-\paragraph{Registration Phase} In this phase, first, the point cloud data acquired from the 3D LiDAR is input into ros2\_tao\_pointpillars to detect surrounding pedestrians. Generally, in the initialization of the tracking target, a method of selecting the detection result closest to the robot is used. However, due to false positives of the detector, there is a possibility that nearby walls or obstacles are mistakenly detected as people. To prevent such erroneous registration of non-human objects, this system sets spatial constraints on the search range. Specifically, a rectangular area with a width of 1.0 m and a depth of 3.0 m is set in the robot coordinate system. Among the detection results existing within this area, the person closest to the robot is selected as the tracking target. After the target is determined, the system starts tracking that person. At the same time, it extracts features from the target's point cloud using ReID3D and registers them as the tracking target.
+\paragraph{登録フェーズ}
+本フェーズでは、まず3D LiDARから取得された点群データを ros2\_tao\_pointpillars へ
+入力し、周囲の歩行者検出を行う。一般に、追従対象の初期化においてはロボットに最も近
+接した検出結果を選定する手法がとられるが、検出器の誤認識（False Positive）により、
+近傍の壁や障害物が誤って人物として検出される可能性がある。 このような非人物物体の
+誤登録を防止するため、本システムでは探索範囲に空間的な制約を設ける。具体的には、
+ロボット座標系において横幅 1.0 m、奥行き 3.0 m の矩形領域を設定し、この領域内に
+存在する検出結果の中で、かつロボットに最も近い人物を追従対象として選定する。
+対象が決定された後、システムは当該人物のトラッキングを開始すると同時に、ReID3Dを
+用いて対象の点群から特徴量を抽出し、追従対象として登録する。
 
-\paragraph{Following Phase} In this phase, point cloud data acquired from the 3D LiDAR is input into ros2\_tao\_pointpillars, and pedestrian detection is performed continuously. Detected pedestrians are tracked by a tracking algorithm, and association with the tracking target is performed based on information up to the previous frame. Based on this tracking result, the system generates motion control commands for the robot and executes following of the target. On the other hand, if the tracking of the target is interrupted for 1.0 seconds due to occlusion or other reasons, the system determines that the target is lost (lost state) and transitions to the re-identification process. In the re-identification process, the point clouds of all pedestrians detected within the field of view at that time are input into ReID3D to extract features. By comparing and matching the obtained features of each pedestrian with the features of the tracking target saved in advance during the registration phase, the tracking target is re-identified.
+\paragraph{追従フェーズ}
+本フェーズでは、3D LiDARから取得した点群データを ros2\_tao\_pointpillars へ入力し、
+常時歩行者の検出を行う。検出された歩行者はトラッキングアルゴリズムによって追跡され、
+前フレームまでの情報に基づいて追従対象との対応付けが行われる。システムはこのトラッ
+キング結果に基づき、ロボットの移動制御指令を生成し、対象への追従走行を実行する。
+一方、オクルージョン等により追従対象のトラッキングが 1.0 秒間途絶えた場合、システ
+ムは対象を見失った（ロスト状態）と判定し、再識別処理へと移行する。 再識別処理では、
+その時点で視野内に検出されている全ての歩行者の点群を ReID3D に入力して特徴量を抽出
+する。得られた各歩行者の特徴量と、登録フェーズで事前に保存された追従対象の特徴量と
+を比較照合することで、追従対象の再同定を行う。
 
-
-
-\section{Software Configuration}
-
-The software stack of the laptop used for the robot is shown in Figure. \ref{Software stack.}. The laptop is equipped with an NVIDIA RTX 3070 GPU (8GB memory), and we used Ubuntu 22.04 LTS as the operating system.
-
-In implementing the deep learning models, PointPillars and ReID3D, we constructed independent Docker container environments for each model. This approach was taken to resolve dependency issues. Specifically, the two models require different versions of the CUDA toolkit and drivers, which makes it difficult for them to coexist within a single host environment. By separating them into containers, we solved this problem.
-
-We adopted Robot Operating System 2 (ROS 2) Foxy Fitzroy as the middleware. Each Docker container and the host PC communicate and coordinate with each other via the ROS 2 communication protocol. Furthermore, we developed a custom ROS 2 package named "HARRP (Human-following Autonomous Robot system with ReID3D and PointPillars)." This package was designed to integratedly manage the entire processing pipeline, ranging from detection by PointPillars and identification by ReID3D to the final control of the robot. By simply launching this HARRP package, the system can be executed as a single integrated system. This allows the user to operate it without needing to be aware of the underlying distributed container environments.
+\section{ソフトウェア構成}
+ロボット用ノートPC内のソフトウェア構成をFig. \ref{Software stack.}に示す。
+ロボット用ノートPCは、RTX 3070 8GB を搭載しており、オペレーティングシステムには
+Ubuntu 22.04 LTSを使用した。深層学習モデルであるPointPillarsおよびReID3Dの実装に
+あたっては，それぞれ独立したDockerコンテナ環境を構築している．これは，両モデルが
+要求するCUDAツールキットやドライバのバージョンが異なり，単一のホスト環境内での共存
+が困難であるという依存関係の問題を解決するためである． ミドルウェアにはROS2 Foxy
+Fitzroyを採用しており，各DockerコンテナおよびホストPCはROS2の通信プロトコルを介
+して連携している．また，PointPillarsによる検出からReID3Dによる識別，そしてロボット
+の制御に至る一連のパイプラインを統合管理するため，独自のROS 2パッケージ「HARRP
+ (Human-following Autonomous Robot system with ReID3D and PointPillars)」を開発
+ した．本システムは，このHARRPパッケージを起動することで，分散されたコンテナ環境
+ を意識することなく，統合システムとして実行可能である．
 
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[height=100mm,clip]{figs/Software_stack.png}
+    \includegraphics[height=120mm,clip]{figure/Software_stack.png}
     \caption{Software stack.}
     \label{Software stack.}
     \end{center}
 \end{figure*}
 
-\section{Dataset Construction}
-\subsection{Data Collection}
-The data collection environment is shown in Figure. \ref{Data collection environment.}. The dimensions of the laboratory used for the experiment are $6.0\,\mathrm{m} \times 7.1\,\mathrm{m}$. The LiDAR sensor was fixed to a dedicated stand as shown in Figure. \ref{LiDAR and custom stand.} and installed in the center of the room.
 
-In this experiment, we specifically designed and fabricated the custom stand shown in Figure. \ref{LiDAR and custom stand.} to simulate the conditions where the sensor is mounted on an actual robot. This stand was designed to match the sensor mounting position and configuration of the robot shown in Figure. \ref{Height comparison.}. Accordingly, the mounting height of the LiDAR was set to be $119.5\,\mathrm{mm}$ from the ground.
 
-\clearpage
+\section{データセットの作成}
+\subsection{データ収集}
+データ収集環境をFig.\ref{Data collection environment.}に示す。実験室の広さは
+$6.0\,\mathrm{m} \times 7.1\,\mathrm{m}$ である。LiDARは
+Fig.\ref{LiDAR and custom stand.}に示すように専用スタンドに固定し、部屋の中央に設置した。
+本実験では、実機ロボットへの搭載を模擬するため、
+Fig.\ref{LiDAR and custom stand.}に示すスタンドを独自に製作した。このスタンドは、
+Fig.\ref{Height comparison.}に示すロボットのセンサ搭載位置と条件を一致させるよう設計
+されており、LiDARの設置高さは地面から $119.5\,\mathrm{mm}$ となるように設定されている。
 
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[height=90mm,clip]{figs/data_collection_room.JPG}
+    \includegraphics[height=120mm,clip]{figure/data_collection_room.JPG}
     \caption{Data collection environment.}
     \label{Data collection environment.}
     \end{center}
@@ -61,23 +109,29 @@ In this experiment, we specifically designed and fabricated the custom stand sho
 \begin{figure*}[h]
   \begin{minipage}[b]{0.5\linewidth}
     \centering
-    \includegraphics[keepaspectratio, width=6cm, angle=-90]{figs/lidar.JPG}
+    \includegraphics[keepaspectratio, width=7cm, angle=-90]{figure/lidar.JPG}
     \caption{LiDAR and custom stand.}
     \label{LiDAR and custom stand.}
   \end{minipage}
   \begin{minipage}[b]{0.5\linewidth}
     \centering
-    \includegraphics[keepaspectratio, height=6cm]{figs/kachaka_lidar.JPG}
+    \includegraphics[keepaspectratio, height=7cm]{figure/kachaka_lidar.JPG}
     \caption{Height comparison.}
     \label{Height comparison.}
   \end{minipage}
 \end{figure*}
 
-Five subjects participated in the data collection. As shown in Figure. \ref{Overview of subjects captured for data collection (1/2).} and Figure. \ref{Overview of subjects captured for data collection (2/2).}, measurements were taken while each subject wore a variety of different outfits. The subjects walked around the LiDAR following five types of walking patterns shown in Figure. \ref{Walking patterns in data collection.}. Through this process, we collected a total of 12 sets of data. From each of these sets, we randomly extracted 85 frames. As a result, we obtained a total of 1,020 frames of data to be used for training.
-
-Furthermore, to construct a validation dataset, we collected data from three different subjects in a different environment. From this data, we randomly extracted 200 frames in the same manner. By combining these, we constructed a final dataset consisting of a total of 1,220 frames.
-
 \clearpage
+
+データ収集には5名の被験者が参加した。各被験者は、
+Fig.\ref{Overview of subjects captured for data collection (1/2).}および
+Fig.\ref{Overview of subjects captured for data collection (2/2).}に示すように、
+多様な服装を着用した状態で計測を行った。被験者は
+Fig.\ref{Walking patterns in data collection.}に示す5種類の歩行パターンに従って
+LiDARの周囲を歩行し、合計で12セットのデータを収集した。ここから各セットにつき85フレーム
+をランダムに抽出し、計1020フレームの学習用データを取得した。さらに、検証用データセット
+として、異なる環境下において別の被験者3名のデータを収集し、同様に200フレームをランダムに
+抽出した。以上を合わせ、合計1220フレームからなるデータセットを構築した。
 
 %===========================================================
 % 1ページ目：前半 20枚
@@ -88,9 +142,9 @@ Furthermore, to construct a validation dataset, we collected data from three dif
     \foreach \n [count=\i] in {%
         1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20%
     }{
-        \subfloat[]{
+        \subfigure[]{
             % ↓ ここも念のため確認： \n.JPG の間にスペースがないか
-            \includegraphics[width=0.17\linewidth]{figs/\n.png}
+            \includegraphics[width=0.17\linewidth]{figure/\n.png}
         }%
         \ifnum\numexpr\i-((\i-1)/4)*4\relax=0 \par\vspace{1.0mm} \else \hfill \fi
     }
@@ -107,9 +161,9 @@ Furthermore, to construct a validation dataset, we collected data from three dif
     \foreach \n [count=\i] in {%
         21,22,23,24,25,26,27,28,29,30,31,32,33%
     }{
-        \subfloat[]{
+        \subfigure[]{
             % ↓ ここも念のため確認： \n.JPG の間にスペースがないか
-            \includegraphics[width=0.2\linewidth]{figs/\n.png}
+            \includegraphics[width=0.2\linewidth]{figure/\n.png}
         }%
         \ifnum\numexpr\i-((\i-1)/4)*4\relax=0 \par\vspace{1mm} \else \hfill \fi
     }
@@ -117,72 +171,80 @@ Furthermore, to construct a validation dataset, we collected data from three dif
     \label{Overview of subjects captured for data collection (2/2).}
 \end{figure}
 
-\clearpage
-
 \begin{figure}[htbp]
     \centering
     % --- 1段目（3枚） ---
-    \subfloat[Straight trajectory.]{
-        \includegraphics[width=0.4\linewidth]{figs/traj_straight.png}
+    \subfigure[Straight trajectory.]{
+        \includegraphics[width=0.3\linewidth]{figure/traj_straight.png}
     }
     \hfill
-    \subfloat[Walking around the sensor.]{
-        \includegraphics[width=0.4\linewidth]{figs/traj_curve.png}
+    \subfigure[Walking around the sensor.]{
+        \includegraphics[width=0.3\linewidth]{figure/traj_curve.png}
     }
-
+    \hfill
+    \subfigure[Circular trajectory.]{
+        \includegraphics[width=0.3\linewidth]{figure/traj_circle.png}
+    }
+    
     \vspace{2mm} % 上下の段の間隔調整
-
-    \subfloat[Circular trajectory.]{
-        \includegraphics[width=0.4\linewidth]{figs/traj_circle.png}
-    }
-    \hfill
+    
     % --- 2段目（2枚） ---
-    \subfloat[Lateral meandering trajectory.]{
-        \includegraphics[width=0.4\linewidth]{figs/traj_side.png}
+    \subfigure[Lateral meandering trajectory.]{
+        \includegraphics[width=0.3\linewidth]{figure/traj_side.png}
     }
-
-    \vspace{2mm}
-
-    \subfloat[Longitudinal meandering trajectory.]{
-        \includegraphics[width=0.4\linewidth]{figs/traj_updown.png}
+    \quad % 画像間のスペース（\hfillだと端に寄ってしまうため\quad等で調整）
+    \subfigure[Longitudinal meandering trajectory.]{
+        \includegraphics[width=0.3\linewidth]{figure/traj_updown.png}
     }
     
     \caption{Walking patterns in data collection.}
     \label{Walking patterns in data collection.}
 \end{figure}
 
-
-
-\subsection{Annotation}
-The annotation process is shown in Figure. \ref{Annotation using BAT 3D.}. In this study, we used only point cloud data for the annotation task. We adopted BAT 3D as the annotation tool. BAT 3D is the successor software to 3D BAT \cite{3D BAT}, which is an open-source tool that runs on a web browser. We assigned bounding boxes for pedestrians to the collected point cloud data.
-
-In BAT 3D, when a bounding box is placed, three views from the X, Y, and Z axes are displayed on the left side of the screen, as shown in Figure. \ref{Annotation using BAT 3D.}. On the right side of the screen, an interface for adjusting the position and posture is displayed. This feature facilitates fine adjustments in the 3D space. As a result, it became possible to perform accurate annotation of pedestrians.
+\subsection{アノテーション}
+アノテーション作業の様子をFig. \ref{Annotation using BAT 3D.}に示す。本研究ではアノテ
+ーションに点群データのみを用い、ツールとしてBAT 3Dを採用した。BAT 3Dは、Webブラウザ上で
+動作するオープンソースツールである3D BAT
+\cite{3D BAT: A Semi-Automatic, Web-based 3D Annotation Toolbox for 
+    Full-Surround, Multi-Modal Data Streams} 
+の後継ソフトウェアである。収集した点群データに対し、歩行者（Pedestrian）のバウンディング
+ボックスの付与を行った。BAT 3Dでは、バウンディングボックスを配置すると、
+Fig.\ref{Annotation using BAT 3D.}に示すように画面左側にXYZ各軸方向からの視点（三面図）
+が表示され、画面右側には位置や姿勢を調整するインターフェースが表示される。この機能により、
+3次元空間上での細かな位置合わせが容易となり、歩行者の正確なアノテーションが可能となった。
 
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[width=150mm,clip]{figs/bat-3d.png}
+    \includegraphics[width=150mm,clip]{figure/bat-3d.png}
     \caption{Annotation using BAT 3D.}
     \label{Annotation using BAT 3D.}
     \end{center}
 \end{figure*}
 
+\subsection{データ拡張}
+データ拡張の適用例をFig. \ref{Examples of data augmentation.}に示す。本研究では、
+学習データの多様性を向上させるため、独自に実装したプログラムを用いて点群データの拡張を
+行った。拡張には、主に以下の3種類の手法を採用した。
 
+第一に、Ground Truth Sampling (GT-Sampling) である。これは、学習データセットに含まれる
+歩行者の点群をランダムに抽出し、対象のフレームに追加配置する手法である。 第二に、ローカル
+変換 (Local Transformation) である。各歩行者の点群に対し、個別に回転、スケーリング
+（拡大縮小）、位置ノイズおよび点群ノイズの付与を行う。 第三に、グローバル変換 
+(Global Transformation) である。フレーム内の点群全体に対して、一括して回転、スケーリング
+、左右反転を適用する。
 
-\subsection{Data Augmentation}
-Figure. \ref{Examples of data augmentation.} shows examples of data augmentation. In this study, we performed data augmentation on the point cloud data to improve the diversity of the training data. For this purpose, we used a program that we implemented independently. We mainly adopted the following three methods for the augmentation.
-
-First is Ground Truth Sampling (GT-Sampling). This is a method that randomly extracts pedestrian point clouds contained in the training dataset and adds them to the target frame. Second is Local Transformation. In this method, we apply rotation, scaling, position noise, and point noise to each pedestrian point cloud individually. Third is Global Transformation. We apply rotation, scaling, and horizontal flipping to the entire point cloud in the frame collectively.
-
-Table \ref{Data augmentation parameters.} shows the specific parameter settings for each method. Through these processes, we generated 15,000 frames from the 1,020 training frames and 4,500 frames from the 200 validation frames. In total, we constructed a dataset of 19,500 frames.
+各手法における具体的なパラメータ設定をTable \ref{Data augmentation parameters.}に示す。
+これらの処理により、学習用データ1,020フレームから15,000フレーム、検証用データ200フレーム
+から4,500フレームを生成し、合計19,500フレームのデータセットを構築した。
 
 \begin{figure}[htbp]
     \centering
-    \subfloat[Original point cloud.]{
-        \includegraphics[width=0.45\linewidth]{figs/PointCloud_origin.png}
+    \subfigure[Original point cloud.]{
+        \includegraphics[width=0.45\linewidth]{figure/PointCloud_origin.png}
     }
     \hfill
-    \subfloat[Augmented point cloud.]{
-        \includegraphics[width=0.45\linewidth]{figs/PointCloud_aug.png}
+    \subfigure[Augmented point cloud.]{
+        \includegraphics[width=0.45\linewidth]{figure/PointCloud_aug.png}
     }
     \hfill
     \caption{Examples of data augmentation.}
@@ -218,22 +280,14 @@ Table \ref{Data augmentation parameters.} shows the specific parameter settings 
   \end{tabular}
 \end{table}
 
-
-
-\section{Training of PointPillars}
-We used the dataset constructed in the previous section to train the PointPillars model. The training was conducted using the NVIDIA TAO Toolkit. The TAO Toolkit is a framework that supports efficient training and optimization of deep learning models. It also provides pre-trained models for PointPillars.
-
-In this study, we used the PointPillars training pipeline provided by the TAO Toolkit. We performed fine-tuning using our constructed dataset. For the training hardware, we used a desktop PC equipped with two NVIDIA RTX 3090 (24GB) GPUs. The hyperparameters used for training are shown in Table \ref{Hyper parameters for PointPillars training.}.
-
-This section describes the hyperparameter settings used for training this model. The training was conducted for 800 epochs, and the batch size per GPU was set to 8. We adopted the Adam optimizer. For learning rate scheduling, we applied the One Cycle Policy.
-
-The One Cycle Policy is a method that first increases the learning rate from an initial value to a maximum value as training progresses, and then decreases it again. This approach helps to achieve both faster training and the suppression of overfitting. The base learning rate was set to 0.003. We allocated 40\% of the total training steps (pct\_start = 0.4) to the phase where the learning rate increases. In the remaining period, the learning rate decreases.
-
-In addition, we adjusted the momentum in the range of 0.95 to 0.85. This change is inversely correlated with the learning rate. This aims to improve the efficiency of parameter updates.
-
-Furthermore, we introduced gradient clipping (Gradient Norm Clip) to ensure the stability of the training. This process limits the magnitude of the gradient when its L2 norm, calculated by backpropagation, exceeds a certain threshold (10.0 in this experiment). This prevents sudden changes in parameters, such as gradient explosion, and achieves stable training.
-
-\clearpage
+\section{PointPillarsの学習}
+PointPillarsの学習には、前節で構築したデータセットを使用した。学習はNVIDIAのTAO Toolkit
+を用いて実施した。TAO Toolkitは、深層学習モデルの効率的な学習と最適化を支援するフレーム
+ワークであり、PointPillarsの学習済みモデルも提供されている。本研究では、TAO Toolkitの
+PointPillars学習パイプラインを利用し、前節で構築したデータセットを用いてファインチュー
+ニングを行った。また、学習にはRTX 3090 24GBを2枚搭載したデスクトップPCで学習を行った。
+学習に使用したハイパーパラメータを
+Table\ref{Hyper parameters for PointPillars training.}に示す。
 
 \begin{table}[h]
   \centering
@@ -259,21 +313,37 @@ Furthermore, we introduced gradient clipping (Gradient Norm Clip) to ensure the 
   \end{tabular}
 \end{table}
 
+本モデルの学習におけるハイパーパラメータの設定について述べる。学習は800エポックにわたり
+実施し、GPUあたりのバッチサイズは8とした。最適化アルゴリズムにはAdamを採用し、学習率の
+スケジューリングにはOne Cycle Policyを適用した。One Cycle Policyは、学習の進行に伴い
+学習率を初期値から最大値まで上昇させた後、再び減少させる手法であり、これにより学習の高速
+化と過学習の抑制を両立させている。また、初期学習率（Base Learning Rate）は0.003とし、
+全学習ステップのうち40\%（pct\_start = 0.4）を学習率の上昇フェーズに割り当て、残りの期間
+で学習率を減少させる構成とした。また、学習率の変動と連動してモーメンタムを0.95から0.85の
+範囲で逆相関的に推移させることで、パラメータ更新の効率化を図っている。さらに、学習の安定性
+を確保するために勾配クリッピング（Gradient Norm Clip）を導入した。これは、誤差逆伝播法に
+よって算出された勾配のL2ノルムが閾値（本実験では10.0）を超えた際、その大きさを制限する処理
+である。この処理により、勾配爆発などの急激なパラメータ変動を防ぎ、安定した学習を実現している。
 
+\section{トラッキング}
+トラッキングには、物体の3次元位置 $(x, y, z)$ とそれぞれの速度 $(v_x, v_y, v_z)$ を
+状態変数として管理し、観測ノイズが含まれる点群データから真の位置を推定するために、等速
+直線運動モデルに基づいた線形カルマンフィルタを実装した。このアルゴリズムは、物理モデル
+に基づいて次時刻の状態を推測する「予測ステップ」と、センサの観測値を用いて推定値を補正
+する「更新ステップ」の2段階で構成される。
 
-\section{Tracking}
-For the tracking process, we managed the object's 3-dimensional position $(x, y, z)$ and its respective velocities $(v_x, v_y, v_z)$ as state variables. To estimate the true position from the point cloud data, which contains observation noise, we implemented a linear Kalman Filter based on a constant velocity model.
+\subsection{状態変数とモデルの定義}
 
-This algorithm consists of two stages: the Prediction Step'' and the Update Step.'' In the Prediction Step, the system predicts the state at the next time step based on a physical model. In the Update Step, the system corrects the estimated values using the observation values obtained from the sensors.
-
-\subsection{Definition of State Variables and Model}
-The state vector of the system, $\mathbf{x}_k$, is defined as the following 6-dimensional vector. It consists of position and velocity components.
+システムの状態ベクトル $\mathbf{x}_k$ は、位置と速度成分を持つ以下の6次元ベクトルとして
+定義される。
 
 \begin{equation}
 \mathbf{x}_k = \begin{bmatrix} x & y & z & v_x & v_y & v_z \end{bmatrix}^T_k
 \end{equation}
 
-We assume that the object moves at a constant velocity during a small time interval $dt$. Based on this constant velocity model, the State Transition Matrix $\mathbf{F}$ is defined as follows. Note that in our implementation, the value of $dt$ is dynamically updated as the elapsed time from the previous frame.
+物体は微小時間 $dt$ の間、等速で移動すると仮定する。この等速直線運動モデルに基づき、
+状態遷移行列（State Transition Matrix） $\mathbf{F}$ は以下のように定義される。
+なお、実装においては $dt$ は直前のフレームからの経過時間として動的に更新される。
 
 \begin{equation}
 \mathbf{F} = \begin{bmatrix} 
@@ -286,29 +356,35 @@ We assume that the object moves at a constant velocity during a small time inter
 \end{bmatrix}
 \end{equation}
 
-\subsection{Prediction Step}
-In this step, we predict the state at the current time $k$ from the estimated value at the previous time $k-1$.
+\subsection{予測ステップ (Predict)}
+
+前時刻 $k-1$ の推定値から、現時刻 $k$ の状態を予測する。
 
 \begin{itemize}
-    \item \textbf{State Prediction}:
-    We linearly predict the next position based on the current estimated velocity.
+    \item \textbf{状態予測 (State Prediction)}:
+    現在の速度推定値に基づいて、次の位置を線形予測する。
     \begin{equation}
     \mathbf{\hat{x}}_{k|k-1} = \mathbf{F} \mathbf{\hat{x}}_{k-1|k-1}
     \end{equation}
     
-    \item \textbf{Covariance Prediction}:
-    We update the error covariance matrix $\mathbf{P}$. This matrix represents the uncertainty of the estimation. Here, $\mathbf{Q}$ is the process noise covariance matrix. It represents the allowed deviation from the constant velocity model (such as changes in acceleration). In this implementation, we set the diagonal elements to $0.1$.
+    \item \textbf{誤差共分散行列の予測 (Covariance Prediction)}:
+    推定の不確かさを表す誤差共分散行列 $\mathbf{P}$ を更新する。
+    ここで $\mathbf{Q}$ はプロセスノイズ共分散行列であり、等速運動モデルからの乖離
+    （加速度変動など）の許容量を表す。本実装では対角成分に $0.1$ を設定している。
     \begin{equation}
     \mathbf{P}_{k|k-1} = \mathbf{F} \mathbf{P}_{k-1|k-1} \mathbf{F}^T + \mathbf{Q}
     \end{equation}
 \end{itemize}
 
-\subsection{Update Step}
-In this step, we correct the predicted values using the observation values $\mathbf{z}_k$ obtained from PointPillars. The observation vector is a 3-dimensional vector consisting only of position: $\mathbf{z}_k = [z_x, z_y, z_z]^T$.
+\subsection{更新ステップ (Update)}
+
+PointPillarsから得られた観測値 $\mathbf{z}_k$ を用いて、予測値を補正する。観測ベクトル
+は位置のみの3次元ベクトル $\mathbf{z}_k = [z_x, z_y, z_z]^T$ である。
 
 \begin{itemize}
-    \item \textbf{Observation Model}:
-    We use the observation matrix $\mathbf{H}$ to extract the observable 3-dimensional position components from the 6-dimensional state vector.
+    \item \textbf{観測モデル (Observation Model)}:
+    6次元の状態ベクトルから観測可能な3次元の位置成分を取り出すための観測行列 
+    $\mathbf{H}$ を用いる。
     \begin{equation}
     \mathbf{H} = \begin{bmatrix} 
     1 & 0 & 0 & 0 & 0 & 0 \\ 
@@ -317,30 +393,32 @@ In this step, we correct the predicted values using the observation values $\mat
     \end{bmatrix}
     \end{equation}
 
-    \item \textbf{Calculation of Kalman Gain}:
-    We calculate the Kalman Gain $\mathbf{K}_k$. This gain determines the balance of reliability between the predicted value and the observed value. Here, $\mathbf{R}$ is the observation noise covariance matrix. It represents the measurement error of the sensor. In this implementation, we set $\mathbf{R} = 1.0 \cdot \mathbf{I}$.
+    \item \textbf{カルマンゲインの計算 (Kalman Gain)}:
+    予測値と観測値の信頼度のバランスを決定するカルマンゲイン $\mathbf{K}_k$ を算出する。
+    ここで $\mathbf{R}$ は観測ノイズ共分散行列であり、センサの測定誤差を表す。本実装では
+    $\mathbf{R} = 1.0 \cdot \mathbf{I}$ と設定している。
     \begin{align}
     \mathbf{S}_k &= \mathbf{H} \mathbf{P}_{k|k-1} \mathbf{H}^T + \mathbf{R} \\
     \mathbf{K}_k &= \mathbf{P}_{k|k-1} \mathbf{H}^T \mathbf{S}_k^{-1}
     \end{align}
 
-    \item \textbf{State Update}:
-    We calculate the observation residual $\mathbf{y}_k = \mathbf{z}_k - \mathbf{H}\mathbf{\hat{x}}_{k|k-1}$. Then, we multiply this residual by the Kalman Gain to correct the predicted value. This gives us the final estimated value.
+    \item \textbf{状態の更新 (State Update)}:
+    観測残差 
+    $\mathbf{y}_k = \mathbf{z}_k - \mathbf{H}\mathbf{\hat{x}}_{k|k-1}$ 
+    にカルマンゲインを乗じて予測値を補正し、最終的な推定値を得る。
     \begin{equation}
     \mathbf{\hat{x}}_{k|k} = \mathbf{\hat{x}}_{k|k-1} + \mathbf{K}_k (\mathbf{z}_k - \mathbf{H}\mathbf{\hat{x}}_{k|k-1})
     \end{equation}
 
-    \item \textbf{Covariance Update}:
-    We reduce the uncertainty of the estimation as the observation information is incorporated.
+    \item \textbf{誤差共分散行列の更新 (Covariance Update)}:
+    観測情報の反映に伴い、推定の不確かさを減少させる。
     \begin{equation}
     \mathbf{P}_{k|k} = (\mathbf{I} - \mathbf{K}_k \mathbf{H}) \mathbf{P}_{k|k-1}
     \end{equation}
 \end{itemize}
 
-\clearpage
-
-\subsection{Implementation Features}
-In this implementation, we address the issue of asynchronous topic reception in the ROS2 environment. Therefore, we do not use a fixed time step. Instead, we dynamically calculate the State Transition Matrix $\mathbf{F}$ using the elapsed time $dt$ from the previous update.
-
-In addition, at the time of initialization, we set the error covariance matrix $\mathbf{P}$ to a large value, specifically $10.0 \cdot \mathbf{I}$. By doing this, the system is designed to place more importance on the observation values immediately after the tracking starts. This ensures that the estimated value converges rapidly to the true value.
-
+\subsection{実装上の特徴}
+本実装では、ROS2環境下での非同期なトピック受信に対応するため、固定のタイムステップでは
+なく、前回の更新時刻からの経過時間 $dt$ を用いて状態遷移行列 $\mathbf{F}$ を動的に計算
+している。また、初期化時には誤差共分散行列 $\mathbf{P}$ を $10.0 \cdot \mathbf{I}$ と
+大きく設定することで、追跡開始直後は観測値を重視し、急速に真値へ収束するよう設計されている。

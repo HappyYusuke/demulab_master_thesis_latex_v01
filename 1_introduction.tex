@@ -1,17 +1,58 @@
-In recent years, there has been a strong expectation for the social implementation of autonomous mobile robots in diverse fields such as logistics, healthcare, and security. The aim is to resolve labor shortages and improve operational efficiency. For these robots to coexist with humans and perform tasks cooperatively, the "person following function"—which recognizes and follows a specific individual—is an extremely important element technology. However, in real-world environments where the surroundings change dynamically, situations frequently occur where the target person temporarily disappears from the sensor's field of view. This is often caused by other pedestrians crossing the path or obstacles blocking the view (a phenomenon known as occlusion). To ensure the continuity of tracking, "Re-identification" is indispensable. This process correctly determines whether a person who has reappeared is the original target when the robot recovers from an occlusion.
+近年，物流，医療，警備といった多様な分野において，労働力不足の解消や業務効率化を
+目的とした自律移動ロボットの社会実装が強く期待されている．こうしたロボットが人と
+共存し，協調してタスクを遂行する上で，特定の人物を認識し追従する「人追従機能」は
+極めて重要な要素技術である．しかし，動的に環境が変化する実環境下においては，他の
+歩行者の横切りや障害物による遮蔽（オクルージョン）が発生し，追従対象が一時的にセ
+ンサの視野から消失する事態が頻発する．追従の継続性を担保するためには，オクルージ
+ョンからの復帰時に，再出現した人物が追従対象本人であるかを正しく判別する「再識別
+（Re-Identification）」が不可欠となる．
 
-To realize person following systems in real-world environments, various approaches have been attempted so far. In methods using cameras (RGB images), systems combining deep learning-based person detection and tracking algorithms have been widely studied. Since these methods provide rich texture information, they demonstrate high identification performance under good lighting conditions. However, they strongly depend on appearance information, such as clothing, and environmental brightness. Therefore, there is a problem that recognition accuracy significantly decreases due to changes in lighting conditions, such as backlight or low light. On the other hand, methods using 2D-LiDAR allow for robust measurement that does not depend on the brightness of the environment, but the information obtained is limited to distance data on a horizontal plane. Generally, tracking is performed by clustering the cross-sections of legs or the torso. However, it is difficult to extract physical features of an individual from only the horizontal cross-sectional shape, making it hard to distinguish one person from another. Regardless of the sensor type, occlusion is unavoidable in environments with crowds or many obstacles. Tracking algorithms based only on motion models, such as Kalman filters, find it difficult to recover after losing the target due to long-term blocking or irregular movement. Therefore, establishing a robust re-identification method that can clearly distinguish the target from surrounding people upon reappearance and resume tracking has become an urgent issue in person following technology.
+実環境における人追従システムの実現に向けては，これまで多角的なアプローチが試みら
+れてきた．カメラ（RGB画像）を用いた手法では，深層学習による人物検出と追跡アルゴ
+リズムを組み合わせたシステムが広く研究されている．これらはテクスチャ情報が豊富な
+ため，良好な照明条件下では高い識別性能を発揮する．しかし，服装などの外観情報や環
+境照度に強く依存するため，逆光や低照度といった照明条件の変動により認識精度が著し
+く低下するという課題がある． 一方，2D-LiDARを用いた手法では，環境の明るさに依存
+しないロバストな計測が可能であるが，取得できる情報は水平断面の距離データに限定さ
+れる．一般に，脚部や胴体の断面をクラスタリングして追跡を行うが，水平断面形状のみ
+から個人の身体的特徴量を抽出することは困難であり，他者との識別性は低い．センサの
+種類にかかわらず，人混みや障害物の多い環境ではオクルージョンが不可避であり，カル
+マンフィルタ等の運動モデルに基づく追跡アルゴリズムだけでは，長時間の遮蔽や不規則
+な移動によって対象を見失った後の復帰が困難となる．したがって，対象再出現時に周囲
+の人物と明確に区別し，追従を再開するためのロバストな再識別手法の確立が，人追従技
+術における喫緊の課題となっている．
 
-Therefore, the purpose of this study is to construct a system with high robustness against occlusion by introducing the re-identification model ReID3D \cite{ReID3D} into a person following system using 3D LiDAR. The novelty of this research lies in focusing on "re-identification" based on 3-dimensional point cloud information, rather than just the "detection and tracking" of the target. Many conventional studies on person following using 3D LiDAR have focused on high-precision detection or motion prediction, and there are few cases that focus on personal re-identification using point clouds. ReID3D, adopted in this study, is a person re-identification framework proposed by Guo et al. It can extract geometric features such as height, body shape, and gait from a person's 3D point cloud as high-dimensional vectors. By applying this to a person following system, we aim to realize a system that is not influenced by lighting conditions and can accurately rediscover the target even after an occlusion.
+そこで本研究では，3D LiDARを用いた人追従システムにおいて，再識別モデルReID3D
+\cite{LiDAR-based Person Re-identification}
+を導入し，オクルージョンに対する高いロバスト性を有するシステムの構築を目的とする．
+本研究の新規性は，追従対象の「検出・追跡」に留まらず，3次元点群情報に基づいた「再
+識別」に焦点を当てた点にある．従来の3D LiDARを用いた人追従研究の多くは，高精度な
+検出や運動予測に主眼を置いており，点群を用いた個人の再識別に着目した事例は少ない．
+本研究で採用するReID3Dは，Guoらによって提案された人物再同定フレームワークであり，
+人物の3D点群から身長，体型，歩容といった幾何学的特徴を高次元ベクトルとして抽出可能
+である．これを人追従システムに応用することで，照明条件に左右されず，かつオクルージ
+ョン後であっても対象を正確に再発見可能なシステムの実現を目指す．
 
-\section{Thesis Organization}
+\section{論文構成}
+本論文は全5章から構成されており、その概要は以下の通りである。
 
-This thesis consists of five chapters, and the outline is as follows.
+第2章では、移動ロボットによる人検出および人追従技術に関する従来研究を包括的に概説
+する。具体的には、カメラ、2D LiDAR、および3D LiDARを用いた手法を体系的に
+整理し、それぞれのセンサ特性に基づく利点と、環境変化へのロバスト性などの技術的課題
+を明らかにする。その上で、本研究の基盤となる深層学習モデルや採用するシステムフレー
+ムワークの基礎理論について解説し、従来研究に対する本研究の立ち位置と独自性を明確に
+する。
 
-In Chapter 2, we comprehensively review conventional research on person detection and person following technologies by mobile robots. Specifically, we systematically organize methods using cameras, 2D LiDAR, and 3D LiDAR, and clarify the advantages based on the characteristics of each sensor, as well as technical issues such as robustness to environmental changes. Furthermore, we explain the basic theories of the deep learning models that form the basis of this research and the system framework adopted. We also clarify the position and uniqueness of this research relative to conventional studies.
+続く第3章では、前章で挙げた課題を解決するために本プロジェクトで構築した提案手法に
+ついて詳述する。センサフュージョンやデータ処理の具体的なアルゴリズム、およびシス
+テム全体のアーキテクチャを示し、3D LiDARと再同定技術を統合した新たな人追従アプロ
+ーチの設計思想と実装詳細を提示する。
 
-In the following Chapter 3, we describe in detail the proposed method constructed in this project to solve the issues raised in the previous chapter. We present specific algorithms for sensor fusion and data processing, as well as the architecture of the entire system. We also present the design philosophy and implementation details of a new person following approach that integrates 3D LiDAR and re-identification technology.
+第4章では、提案手法の有効性を実証するために実施した実験について論じる。実験
+環境、設定された評価シナリオ、および比較手法について説明した上で、得られた実験結果
+を定量的に分析する。これにより、提案システムが実環境において十分な追従性能と頑健性
+を有していることを検証する。
 
-In Chapter 4, we discuss the experiments conducted to demonstrate the effectiveness of the proposed method. After explaining the experimental environment, the set evaluation scenarios, and the comparison methods, we quantitatively analyze the obtained experimental results. Through this, we verify that the proposed system possesses sufficient following performance and robustness in real-world environments.
-
-Finally, in Chapter 5, we summarize the knowledge and achievements obtained in this research. We conclude on the usefulness of the proposed method revealed through a series of verifications, while also organizing the current limitations and remaining issues, and describing the prospects for future research.
+最後に第5章において、本研究で得られた知見と成果を総括する。一連の検証を通じて明らか
+になった提案手法の有用性を結論付けるとともに、現時点での限界や残された課題を整理し、
+将来の研究の展望について述べる。
