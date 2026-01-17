@@ -6,7 +6,7 @@
 \def\KITMODE{thesis} % ← ar にしたければ thesis を ar に変える
 %\def\KITMODE{ar} % ← 修論にしたければ ar を thesis に変える
 \PassOptionsToPackage{dvipdfmx}{graphicx}
-\documentclass[\KITMODE, dvipdfmx]{kitinteract} 
+\documentclass[\KITMODE]{kitinteract} 
 %%%%%%%%%%%%
 
 \usepackage[caption=false]{subfig}% Support for small, `sub' figures and tables
@@ -90,10 +90,10 @@
 
 
 % ----- Abstract & Key words (write once; used in both modes) -----
-\kitabstract{%
-\input{0_abstract.tex}
-}
-\kitkeywords{Human Following, Person Tracking, Person Identification, Point Clouds, 3D LiDAR}
+%\kitabstract{%
+%\input{0_abstract.tex}
+%}
+%\kitkeywords{Human Following, Person Tracking, Person Identification, Point Clouds, 3D LiDAR}
 
 
 % ----- (Optional) Advanced Robotics metadata -----

@@ -25,26 +25,97 @@ PointPillarsを用い、歩行者検出精度を定量的に評価する。ま�
 推論実験の環境構築にあたり、入力データは点群のバイナリファイルをROS 2トピックとして変換
 ・パブリッシュし、これを検出モデルがサブスクライブする形式を採用した。この際、トピックの
 パブリッシュ周波数は 10 Hz に設定している。 また、本手法の有効性を検証するための比較対象
-として、既存のオープンソース実装である ros2\_tao\_pointpillars パッケージの標準
-モデルを用いた。
+として、既存のオープンソース実装である ros2\_tao\_pointpillars パッケージで公開されて
+いるモデルを用いた。
 
 \subsection{追跡・再識別性能に関する比較実験}
-本実験では、公開データセットを用い、構築した人追従システム全体の追跡性能および再識別性能
-を評価する。 評価用データセットには、TPT-BENCH
-\cite{TPT-Bench} を採用した。ロボット知覚に関する既存のデータセット
-としては、RoboSense\cite{RobSense} や JRDB-PanoTrack
-\cite{JRDB-PanoTrack} などが挙げられる。しかし、本研究の主眼である
-「特定の人物を継続的に追跡するタスク (Target Person Tracking: TPT)」における評価には、
-TPTに特化したデータセットが最適であるためTPT-BENCHを選定した。 TPT-BENCHは、LiDAR点群、
-RGB画像、深度情報の3種類のセンサ情報を含んでおり、屋内・屋外、あるいは日中・夜間といった
-多様な環境下で収集された大規模データセットである。
+本実験では、公開データセットを用い、構築した人追従システム全体の追跡性能および再識
+別性能を評価する。評価用データセットには、ロボットによる人追従タスク（Target 
+Person Tracking: TPT）に特化し、かつ本研究で重要となる3D LiDARデータを含む大規模
+データセットである TPT-BENCH \cite{TPT-Bench} を選定した。RoboSense 
+\cite{RobSense} や JRDB-PanoTrack \cite{JRDB-PanoTrack} といった既存データセットと
+比較して、TPT-BENCHは多様な環境下（屋内・屋外、照度変化、混雑環境）での長時間追跡
+を含んでおり、再識別能力を評価する上で最適である。
 
-評価指標には、Average Overlap (AO)、F1-score、および Avg Max Recall (AMR) の3つを用
-いる。 AOは、推定されたバウンディングボックスとグランドトゥルース（正解データ）との領域
-重複度（IoU）の平均値を示す指標である。F1-scoreは、追跡の適合率 (Precision) と再現率 
-(Recall) の調和平均であり、検出の正確さと網羅性のバランスを評価する。AMRは、ターゲットを
-どの程度の割合で正しく捉え続けられたかを示す、追跡の頑健性を測る指標である。
+本研究では、48シーケンスの中から「シーケンス0015」を評価対象として選定した。 
+当該シーケンスの仕様は以下の通りである。グランドトゥルース（Ground Truth）が存在す
+る総時間は 202.1秒であり、そのうちターゲットが追跡不能となる消失時間は合計 24.3秒、
+消失回数は計 28回記録されている。 環境特性として、シーケンス内においてターゲットの
+服装変化は発生しないものの、照明条件は標準的な明るさから薄暗い状態へと推移する傾向
+にある。
 
+なお、本実験で用いる比較対象手法および評価指標の詳細については、それぞれ
+第\ref{baseline}節および第\ref{evaluation}節にて述べる。
+
+\subsubsection{比較する手法} \label{baseline}
+本実験での比較する手法として以下を選定した。
+
+\paragraph{SiamRPN++ \cite{SiamRPN++}}
+Siameseネットワークを用いた視覚的物体追跡（Visual Object Tracking: VOT）の代表的
+手法である。深いネットワーク（ResNet等）におけるパディングによる位置不変性の問題を、
+空間的サンプリング戦略によって解決している。LiDAR等の深度情報を用いない、画像ベース
+のSOT（Single Object Tracking）手法のベースラインとして採用する。
+
+\paragraph{DiMP \cite{DiMP}}
+ターゲットと背景を識別するモデルを推論時にオンラインで最適化する手法である。
+従来のSiamese系手法が背景情報を活用できないという課題に対し、識別的損失を最小化
+する最適化プロセスをネットワーク内に組み込むことで、高い識別能力を実現している。
+識別的アプローチを用いるSOT手法の代表として比較に用いる。
+
+\paragraph{MixFormer \cite{MixFormer}}
+Transformerをベースとした、近年注目されている追跡フレームワークである。
+Mixed Attention Module (MAM) により、特徴抽出とターゲット情報の統合を同時に行うこと
+で、ターゲットと探索領域間の密な相互作用を学習している。TransformerベースのSOT手法
+の性能を確認するために採用する。
+
+\paragraph{OCL-RPF \cite{OCL-RPF}}
+ロボットによる人追従（RPF）に特化した、人物再同定（ReID）ベースの追跡手法である。
+従来の固定モデルでは環境変化に対応できないという課題に対し、オンライン継続学習
+（OCL）を用いて特徴抽出器を動的に更新する仕組みを持つ。本研究と同様に「ロボット視
+点での長期追従」を目的とした手法として比較に用いる。
+
+\subsubsection{評価指標} \label{evaluation}
+本実験における定量評価指標として、TPT-BENCH \cite{TPT-Bench} で採用されている Average Overlap (AO)、F-score、および Avg Max Recall (AMR) を用いる。
+
+まず、各フレーム $t$ における予測バウンディングボックスを $P_t$、グランドトゥルースを $G_t$ とし、その領域重複度 (Intersection over Union) を $\text{IoU}_t$ と定義する。
+
+\begin{equation}
+ \text{IoU}_t = \frac{|P_t \cap G_t|}{|P_t \cup G_t|}
+\end{equation}Undefined control sequence.
+
+以下に各指標の定義を示す。
+
+\paragraph{Average Overlap (AO)}
+AOは、ターゲットが存在する全フレームにおける $\text{IoU}_t$ の平均値として定義される。全フレーム数を $N$ とすると、次式で表される。
+
+\begin{equation}
+ \text{AO} = \frac{1}{N} \sum_{t=1}^{N} \text{IoU}_t
+\end{equation}
+
+\paragraph{F-score}
+F-score の算出には、Tracking Precision ($Pr$) と Tracking Recall ($Re$) を用いる。
+IoU閾値を満たす予測を正解（True Positive）とし、そのフレーム数を $N_{TP}$ とする。また、システムが予測を出力した総フレーム数を $N_{pred}$、実際にターゲットが存在する総フレーム数を $N_{GT}$ と定義する。このとき、$Pr$ と $Re$ は次式で表される。
+
+\begin{equation}
+ Pr = \frac{N_{TP}}{N_{pred}}, \quad Re = \frac{N_{TP}}{N_{GT}}
+\end{equation}
+
+F-score はこれら $Pr$ と $Re$ の調和平均として定義される。
+
+\begin{equation}
+ \text{F-score} = \frac{2 \cdot Pr \cdot Re}{Pr + Re}
+\end{equation}
+
+$Pr$ は予測の正確さ（誤検出の少なさ）を、$Re$ はターゲットの検出率（見逃しの少なさ）を表しており、F-scoreはこれらを総合的に評価する指標である。
+
+\paragraph{Avg Max Recall (AMR)}
+AMR は、誤検出（False Positive）を許容しない（$Pr = 100\%$）という条件下で達成可能な最大の $Re$ を、複数のIoU閾値に対して平均化したものである。IoU閾値の集合を $\Omega$ とし、ある閾値 $\lambda \in \Omega$ における最大リコールを $Re_{max}(\lambda)$ とすると、次式で定義される。
+
+\begin{equation}
+ \text{AMR} = \frac{1}{|\Omega|} \sum_{\lambda \in \Omega} Re_{max}(\lambda) \quad \text{s.t.} \quad Pr = 1
+\end{equation}
+
+この指標は、誤追従を含まない追跡維持能力を評価する。
 
 
 \section{実験結果}
@@ -52,9 +123,7 @@ RGB画像、深度情報の3種類のセンサ情報を含んでおり、屋内�
 歩行者検出の実験結果をTable \ref{Evaluation results of pedestrian detection.}に示す。
 ros2\_tao\_pointpillarsのBEV APは35.47[\%]、3D APは18.50[\%]であったのに対し、
 本手法はBEV APが79.86[\%]、3D APが61.59[\%]であり、いずれの指標においても従来のモデル
-を大幅に上回る結果となった。どちらのモデルも誤検出があり、ros2\_tao\_pointpillarsでは、
-2人の歩行者を1つのバウンディングボックスとして検出するケースが見られた。一方、本手法では、
-概ね歩行者を検出できていたが、歩行者が停止し、直立している場合に検出されない現象が見られた。
+を大幅に上回る結果となった。
 
 \begin{table}[h]
   \centering
@@ -67,8 +136,201 @@ ros2\_tao\_pointpillarsのBEV APは35.47[\%]、3D APは18.50[\%]であったの�
   \end{tabular}
 \end{table}
 
+本実験における損失関数および学習率の推移を 
+Figure \ref{Evolution of loss functions and learning rate.} に示す。 ここでは、
+全体の損失 (Figure \ref{train_loss}) に加え、その内訳としてバウンディングボックス
+のクラス分類損失 (Figure \ref{loss_cls})、位置特定損失 (Figure \ref{loss_loc})、
+および向き推定損失 (Figure \ref{loss_dir}) をそれぞれ示している。
+
+まず、全グラフに共通する特徴として、Step 47,000 付近において損失の一時的な急上昇
+（スパイク）が確認される。これは、501エポック目から学習を再開（Resume）したことに
+起因する挙動である。しかし、この局所的な変動を除けば、全体として損失は学習の進行
+とともに減少傾向を示しており、学習が適切に進行したことがわかる。
+
+詳細な推移を見ると、Figure \ref{train_loss}, \ref{loss_cls}, \ref{loss_loc} に
+ついては、学習初期（Step 0）から急激に損失が低下し、その後 Step 700 付近までは順調
+に減少を続けている。それ以降は、減少幅が緩やかになりつつも、着実に収束に向かう傾向
+が見られた。
+
+一方、Direction Loss (Figure \ref{loss_dir}) は他の損失とは異なる推移を示した。
+Step 25,000 付近までは緩やかな減少にとどまっていたが、その後、減少傾向が強まって
+いる。学習再開後も同様に順調な減少が続き、Step 69,000 付近からは減少率が鈍化し、
+ほぼ横ばいの推移（収束状態）となった。
+
+\begin{figure}[h]
+    \centering
+    % --- 1行目 ---
+    \subfloat[Total training loss]{
+        \includegraphics[width=0.48\linewidth]{figs/fig_train_loss.png}
+        \label{train_loss}
+    }
+    \hfill % 左右の間隔を自動調整
+    \subfloat[Classification loss]{
+        \includegraphics[width=0.48\linewidth]{figs/fig_loss_cls.png}
+        \label{loss_cls}
+    } \\ % 改行
+    \vspace{3mm} % 行間の調整
+
+    % --- 2行目 ---
+    \subfloat[Localization loss]{
+        \includegraphics[width=0.48\linewidth]{figs/fig_loss_loc.png}
+        \label{loss_loc}
+    }
+    \hfill
+    \subfloat[Direction loss]{
+        \includegraphics[width=0.48\linewidth]{figs/fig_loss_dir.png}
+        \label{loss_dir}
+    } \\
+
+    \caption{Evolution of loss functions and learning rate.}
+    \label{training_curves}
+\end{figure}
+
+歩行者検出の様子を Figure \ref{bbox} に示す。なお、本検証データには3名
+の歩行者が含まれている。 まず、両モデルに共通する傾向として、基本的には歩行者を
+検出できているものの、一部のシーンにおいては検出漏れ（False Negative）が発生する
+ことが確認された。また、椅子や壁などの非人間物体を歩行者として誤って検出する誤検出
+（False Positive）も散見された。
+
+モデルごとの特性に着目すると、比較手法である ros2\_tao\_pointpillars では、
+Figure \ref{eval_related} に示すように、近接する2人の歩行者を分離できず、1つの
+バウンディングボックスとしてまとめて検出してしまうケースが確認された。 一方、提案
+手法では Figure \ref{eval_harrp} に示すように、個々の歩行者を正しく分離して検出
+できており、全体として良好な検出結果が得られた。ただし、特有の課題として、歩行者
+が静止し直立している状態において、検出が行われない（未検出となる）現象が確認された。
+
+\begin{figure}[h]
+    \centering
+    % --- 左側の図 ---
+    \subfloat[Detection results using the conventional model.]{
+        \includegraphics[width=0.4\linewidth]{figs/eval_pp_related.png}
+        \label{eval_related}
+    }
+    \hfill % <--- これが重要です（図と図の間を自動で広げる）
+    % --- 右側の図 ---
+    \subfloat[Result of the optimized PointPillars (Ours).]{
+        \includegraphics[width=0.4\linewidth]{figs/eval_pp_harrp.png}
+        \label{eval_harrp}
+    }
+    
+    \caption{Examples of pedestrian detection by the conventional model and Ours.}
+    \label{bbox}
+\end{figure}
+
+\subsection{追跡・再識別性能に関する比較実験}
+\subsection{TPT-Benchデータセットにおける定量評価}
+TPT-Benchデータセットを用いた実験結果を Table \ref{tpt-bench} に示す。 まず、
+全体的な指標の傾向について述べる。本実験において、AMR (Average Miss Rate) は全手法
+を通じて 0.00\% という結果が得られた。また、AO (Average Overlap) と F-score の関係
+性に着目すると、すべての手法において、F-score よりも AO の方が高い値
+を示す傾向が確認された。
+
+次に、各手法の性能比較を行う。 SiamRPN++ および MixFormer については、AO と 
+F-score の双方が 10\% を下回っており、シーケンス0015においては十分な追跡性能
+が得られなかった。 これに対し、DiMP、OCL-RPF、および提案手法の3手法は、いずれも
+15\% 以上のスコアを達成しており、比較的良好な性能を示している。 中でも DiMP は AO、
+F-score ともに 22\% を超える結果となった。特筆すべきは OCL-RPF であり、両指標にお
+いて 72\% を超える極めて高い数値を記録し、他の比較手法および提案手法に対して圧倒的
+な性能差を示している。
+
+\begin{table}[h]
+  \centering
+  \caption{Evaluation results of tracking metrics (AO, F1-score, and AMR) on TPT-Bench.}
+  \label{tpt-bench}
+  \begin{tabular}{ccccc} \toprule
+    Method & AO (\%) & F-score (\%) & AMR (\%) & Sensor \\ \midrule
+    SiamRPN++ & 3.32 & 5.48 & 0.00 & Camera \\
+    DiMP & 22.65 & 27.05 & 0.00 & Camera \\
+    MixFormer & 3.93 & 5.41 & 0.00 & Camera \\
+    OCL-RPF & 72.71 & 77.11 & 0.00 & Camera \\
+    Ours & 15.87 & 16.12 & 0.00 & 3D LiDAR \\ \bottomrule
+  \end{tabular}
+\end{table}
+
+TPT-Benchデータセットを用いた本手法による追跡の様子を、Figure \ref{tracking} 
+および Figure \ref{reid} に示す。
+各図の構成は、左側が3D LiDARによる点群データの可視化、右側が同時刻におけるカメラ
+画像である。
+
+3D LiDARの点群画像において、赤色のバウンディングボックスはPointPillarsによる歩行者
+検出の結果を示し、緑色のバウンディングボックスはReID3Dおよびカルマンフィルタによっ
+て推定されたターゲットの追跡結果を示している。 追跡ボックスの上部には、追跡IDおよ
+びReID3Dが出力するターゲットとの特徴ベクトル類似度 (Sim) を併記した。 また、検出
+された歩行者の周囲に表示されている灰色の球体は、ReID3Dによる特徴ベクトルの抽出処理
+が行われたことを示唆するマーカーである。
+
+Figure \ref{tracking} は、ターゲットが環境内の障害物に隠れ、一時的に観測不能となる
+状況下での追跡結果を時系列順に示したものである。 まず、Figure \ref{tracking1} の時
+点ではターゲットは視認可能であり、正常に追跡されている。 
+続いて Figure \ref{tracking2} の時点では、ターゲットが障害物の陰に入り、LiDAR
+センサによる直接的な検出が不可能なオクルージョン状態が発生している。 しかしながら、
+本システムはカルマンフィルタを用いた状態推定を行っているため、観測データが得られな
+い期間においてもターゲットの位置を予測することが可能である。 その結果、
+Figure \ref{tracking3} に示されるように、再出現時までターゲットのロストを防ぎ、
+ロバストな追跡を実現できていることが確認された。
+
+ReID3Dを用いた再識別（Re-identification）によって、一時的な追跡中断から復帰する
+様子を Figure \ref{reid} に抜粋して示す。 本シーケンスの Figure \ref{reid1} から 
+Figure \ref{reid2} への遷移において、検出漏れの要因によりシステムはターゲットを
+見失い、追跡状態はロスト（Lost）へと移行している。 しかしその後、Figure 
+\ref{reid3} に示すように、周囲に追跡対象以外の歩行者が複数存在する状況下であっても、
+ReID3Dによる再識別が正しく機能したことで、ターゲットを正確に再識別し、追跡を再開
+することに成功している。
+
+\begin{figure}[h]
+    \centering
+    % --- 1枚目 ---
+    \subfloat[Tracking before occlusion.]{
+        \includegraphics[width=1.0\linewidth]{figs/tracking1.png}
+        \label{traking1}
+    } \\ % <--- ここで改行することで縦に並びます
+    \vspace{5mm}
+    
+    % --- 2枚目 ---
+    \subfloat[Tracking during occlusion.]{
+        \includegraphics[width=1.0\linewidth]{figs/tracking2.png}
+        \label{tracking2}
+    } \\ % <--- ここで改行
+    \vspace{5mm}
+
+    % --- 3枚目 ---
+    \subfloat[Tracking after occlusion.]{
+        \includegraphics[width=1.0\linewidth]{figs/tracking3.png}
+        \label{tracking3}
+    }
+    
+    \caption{Sequential tracking results showing the target before, during, and after occlusion.}
+    \label{tracking}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    % --- 1枚目 ---
+    \subfloat[Target tracking in progress.]{
+        \includegraphics[width=1.0\linewidth]{figs/reid1.png}
+        \label{reid1}
+    } \\ % <--- ここで改行することで縦に並びます
+    \vspace{5mm}
+    
+    % --- 2枚目 ---
+    \subfloat[Target lost.]{
+        \includegraphics[width=1.0\linewidth]{figs/reid2.png}
+        \label{reid2}
+    } \\ % <--- ここで改行
+    \vspace{5mm}
+    
+    % --- 3枚目 ---
+    \subfloat[Target re-identified.]{
+        \includegraphics[width=1.0\linewidth]{figs/reid3.png}
+        \label{reid3}
+    }
+    
+    \caption{Process of recovering the target from a lost state.}
+    \label{reid}
+\end{figure}
 
 \section{考察}
+\subsection{歩行者検出性能に関する比較実験}
 実験結果から、Livox社製3D-LiDARの点群特性に最適化を施したPointPillarsが、
 従来のモデルを大幅に上回る歩行者検出性能を示したことが確認できた。これは、
 本研究で提案した独自のデータセットを用いた学習が、センサ特性に適応した特徴抽出を可能にし、
@@ -80,3 +342,64 @@ ros2\_tao\_pointpillarsのBEV APは35.47[\%]、3D APは18.50[\%]であったの�
 一方、本手法では、歩行者が停止し直立している場合に検出されない現象が見られた。これは、
 データセットにおいて、歩行者が動いている状態の点群が多く含まれていたことが影響している
 と考えられる。
+
+\subsection{追跡・再識別性能に関する比較実験}
+実験結果より、本手法は比較対象である SiamRPN++ および MixFormer を上回る追跡・再識
+別性能を達成した。 SiamRPN++ は、基本的に前フレームの推定位置近傍を探索範囲とする
+局所探索（Local Search）アプローチを採用しており、MixFormer はターゲットテンプレー
+トと探索領域の特徴を相互作用させることで追跡を行う手法である。これらの手法は連続的
+な視覚情報に依存するため、シーケンス0015のような長期的なオクルージョンによるターゲ
+ットの消失や、照明変化による視覚特徴の劣化が発生する環境下では、追跡性能が著しく低
+下する傾向が見られた。
+これに対し、本手法は 3D LiDAR 点群から歩行者の特徴ベクトルを生成し、再識別（ReID）
+を行うアプローチを採用している。照明条件に左右されない点群情報の活用と、検出ベース
+の大域的な照合を行うことで、上記のような比較手法よりも高い再識別性能を発揮した。
+その結果、ターゲットを見失った後の追跡復帰（リカバリー）が可能となり、これが定量評
+価におけるスコアの向上に寄与したと考えられる。
+
+\subsubsection{オンライン適応能力の有無による再識別性能への影響}
+OCL-RPFと比較して提案手法のスコアが伸び悩んだ第一の要因は、ターゲットモデルの更新
+機構の違いにある。 OCL-RPFは「オンライン継続学習（Online Continual Learning）」機構
+を有しており、追跡プロセスにおいて時々刻々と変化するターゲットの外見（姿勢の変化や
+観測アングルの推移など）を逐次学習し、モデルを動的に適応させている。これにより、
+初期フレームとは異なる特徴を持って再出現した場合でも、高い精度で再識別を行うことが
+可能である。
+
+対して本手法は、事前学習済みの固定モデルから出力される初期の特徴ベクトルと
+再検出時の特徴ベクトルとの類似度によってReIDを行っているため、ロスト後の再識別にお
+いて、ターゲットを同一人物と判定できず、追跡復帰の成功率において決定的な差が生じた
+と考えられる。
+
+\subsubsection{カルマンフィルタによる追跡予測の限界とDiMPとの比較}
+次に、ReID機能を持たない汎用トラッカーであるDiMPに対しても、本手法がAOスコア
+（15.87\% vs 22.65\%）で及ばなかった点について、トラッキングアルゴリズムの観点
+から考察する。
+
+本手法では、ターゲットの動的追跡にカルマンフィルタを採用しており、等速直線運動などの
+線形な運動モデルを仮定して状態推定を行う。しかし、本実験で用いたTPT-Benchのシーケン
+スでは、歩行者とロボットの挙動の差によって非線形な挙動が含まれる。このようなシーン
+において、線形モデルに基づくカルマンフィルタの予測位置と、実際のターゲット位置との
+間に乖離（予測誤差）が生じやすくなる。 また、予測位置のズレは、続くReIDステップに
+おける探索領域（Region of Interest）の不整合や、データアソシエーション（ID付け）
+のミスを誘発する要因となる。結果として、追跡自体は継続できていても、予測の遅れや
+オーバーシュートによりバウンディングボックスの重なり（Overlap）が低下し、これが
+AOスコアの低迷に繋がったと推察される。
+
+一方、DiMPはIoU-Netを統合しており、ターゲットの位置推定において運動モデルによる
+予測に依存するだけでなく、画像特徴から直接バウンディングボックスの重なり具合（IoU）
+を最大化するように回帰を行う。これにより、ターゲットが不規則な動きを見せた場合でも、
+画像内の特徴に食らいつく形で高精度な矩形生成が可能である。 つまり、本手法の「カルマ
+ンフィルタによる運動予測」と、DiMPの「学習ベースの矩形回帰」との間にある追跡精度の
+質的差異が、数値結果として表れたと言える。
+
+\subsubsection{ターゲット消失と復帰能力に関する総合的考察}
+最後に、全体を通じた復帰能力について考察する。
+OCL-RPF（AO 72.71\%）が圧倒的なスコアを記録した背景には、オンライン継続学習による
+適応力に加え、ターゲットロスト時に画像全体から対象を再検索する強力なグローバル探索
+能力を有している点が挙げられる。
+
+本手法もReID機能を搭載しており、カルマンフィルタの予測範囲内でターゲットが見つから
+ない場合、ReIDによる再探索を行う設計となっている。しかし、前述の通りカルマンフィル
+タの予測精度に限界があるため、オクルージョン（遮蔽）が長時間続き、ターゲットの運動
+が予測から大きく外れた場合、再探索すべき領域を正しく絞り込めない、あるいは誤った
+クラスタと紐づけてしまうリスクが高まる。

@@ -5,35 +5,52 @@
 \contentsline {section}{\numberline {2.1}2D LiDARを用いた人検出手法}{3}{section.2.1}%
 \contentsline {section}{\numberline {2.2}3D LiDARを用いた人追従手法}{4}{section.2.2}%
 \contentsline {section}{\numberline {2.3}単眼カメラを用いたオクルージョンを考慮した人追従手法}{5}{section.2.3}%
-\contentsline {section}{\numberline {2.4}PointPillars}{6}{section.2.4}%
-\contentsline {section}{\numberline {2.5}ReID3D}{8}{section.2.5}%
-\contentsline {section}{\numberline {2.6}従来研究における課題と本研究の位置づけ}{9}{section.2.6}%
-\contentsline {chapter}{\numberline {3}Human-following System Using 3D LiDAR and ReID3D}{10}{chapter.3}%
-\contentsline {section}{\numberline {3.1}概要}{10}{section.3.1}%
-\contentsline {section}{\numberline {3.2}システム構成}{10}{section.3.2}%
-\contentsline {paragraph}{登録フェーズ}{11}{paragraph*.3}%
-\contentsline {paragraph}{追従フェーズ}{11}{paragraph*.4}%
-\contentsline {section}{\numberline {3.3}ソフトウェア構成}{12}{section.3.3}%
-\contentsline {section}{\numberline {3.4}データセットの作成}{13}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}データ収集}{13}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}アノテーション}{15}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}データ拡張}{15}{subsection.3.4.3}%
-\contentsline {section}{\numberline {3.5}PointPillarsの学習}{15}{section.3.5}%
-\contentsline {section}{\numberline {3.6}トラッキング}{18}{section.3.6}%
-\contentsline {subsection}{\numberline {3.6.1}状態変数とモデルの定義}{19}{subsection.3.6.1}%
-\contentsline {subsection}{\numberline {3.6.2}予測ステップ (Predict)}{19}{subsection.3.6.2}%
-\contentsline {subsection}{\numberline {3.6.3}更新ステップ (Update)}{20}{subsection.3.6.3}%
-\contentsline {subsection}{\numberline {3.6.4}実装上の特徴}{21}{subsection.3.6.4}%
-\contentsline {chapter}{\numberline {4}Experiments}{23}{chapter.4}%
-\contentsline {section}{\numberline {4.1}実験目的}{23}{section.4.1}%
-\contentsline {section}{\numberline {4.2}実験方法}{23}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}歩行者検出性能に関する比較実験}{23}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}追跡・再識別性能に関する比較実験}{24}{subsection.4.2.2}%
-\contentsline {section}{\numberline {4.3}実験結果}{24}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}歩行者検出性能に関する比較実験}{24}{subsection.4.3.1}%
-\contentsline {section}{\numberline {4.4}考察}{24}{section.4.4}%
-\contentsline {chapter}{\numberline {5}Conclusion}{26}{chapter.5}%
-\contentsline {section}{\numberline {5.1}まとめ}{26}{section.5.1}%
-\contentsline {section}{\numberline {5.2}今後の課題}{26}{section.5.2}%
-\contentsline {chapter}{References}{26}{section.5.2}%
-\contentsline {chapter}{Publications Related to This Thesis}{28}{chapter*.17}%
+\contentsline {section}{\numberline {2.4}カメラとLiDARを用いたReID手法}{6}{section.2.4}%
+\contentsline {section}{\numberline {2.5}PointPillars}{7}{section.2.5}%
+\contentsline {section}{\numberline {2.6}ReID3D}{9}{section.2.6}%
+\contentsline {section}{\numberline {2.7}従来研究における課題と本研究の位置づけ}{10}{section.2.7}%
+\contentsline {chapter}{\numberline {3}Human-following System Using 3D LiDAR and ReID3D}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}概要}{11}{section.3.1}%
+\contentsline {section}{\numberline {3.2}システム構成}{11}{section.3.2}%
+\contentsline {paragraph}{登録フェーズ}{12}{paragraph*.3}%
+\contentsline {paragraph}{追従フェーズ}{12}{paragraph*.4}%
+\contentsline {section}{\numberline {3.3}ソフトウェア構成}{13}{section.3.3}%
+\contentsline {section}{\numberline {3.4}データセットの作成}{14}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}データ収集}{14}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}アノテーション}{16}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}データ拡張}{16}{subsection.3.4.3}%
+\contentsline {section}{\numberline {3.5}PointPillarsの学習}{19}{section.3.5}%
+\contentsline {section}{\numberline {3.6}トラッキング}{20}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}状態変数とモデルの定義}{20}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}予測ステップ (Predict)}{21}{subsection.3.6.2}%
+\contentsline {subsection}{\numberline {3.6.3}更新ステップ (Update)}{21}{subsection.3.6.3}%
+\contentsline {subsection}{\numberline {3.6.4}実装上の特徴}{23}{subsection.3.6.4}%
+\contentsline {chapter}{\numberline {4}Experiments}{24}{chapter.4}%
+\contentsline {section}{\numberline {4.1}実験目的}{24}{section.4.1}%
+\contentsline {section}{\numberline {4.2}実験方法}{24}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}歩行者検出性能に関する比較実験}{24}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}追跡・再識別性能に関する比較実験}{25}{subsection.4.2.2}%
+\contentsline {subsubsection}{比較する手法}{25}{subsubsection*.15}%
+\contentsline {paragraph}{SiamRPN++ \cite {SiamRPN++}}{25}{paragraph*.16}%
+\contentsline {paragraph}{DiMP \cite {DiMP}}{25}{paragraph*.17}%
+\contentsline {paragraph}{MixFormer \cite {MixFormer}}{25}{paragraph*.18}%
+\contentsline {paragraph}{OCL-RPF \cite {OCL-RPF}}{26}{paragraph*.19}%
+\contentsline {subsubsection}{評価指標}{26}{subsubsection*.20}%
+\contentsline {paragraph}{Average Overlap (AO)}{26}{paragraph*.21}%
+\contentsline {paragraph}{F-score}{26}{paragraph*.22}%
+\contentsline {paragraph}{Avg Max Recall (AMR)}{26}{paragraph*.23}%
+\contentsline {section}{\numberline {4.3}実験結果}{27}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}歩行者検出性能に関する比較実験}{27}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}追跡・再識別性能に関する比較実験}{28}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}TPT-Benchデータセットにおける定量評価}{28}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}考察}{30}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}歩行者検出性能に関する比較実験}{30}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}追跡・再識別性能に関する比較実験}{30}{subsection.4.4.2}%
+\contentsline {subsubsection}{オンライン適応能力の有無による再識別性能への影響}{31}{subsubsection*.30}%
+\contentsline {subsubsection}{カルマンフィルタによる追跡予測の限界とDiMPとの比較}{31}{subsubsection*.31}%
+\contentsline {subsubsection}{ターゲット消失と復帰能力に関する総合的考察}{32}{subsubsection*.32}%
+\contentsline {chapter}{\numberline {5}Conclusion}{35}{chapter.5}%
+\contentsline {section}{\numberline {5.1}まとめ}{35}{section.5.1}%
+\contentsline {section}{\numberline {5.2}今後の課題}{35}{section.5.2}%
+\contentsline {chapter}{References}{36}{section.5.2}%
+\contentsline {chapter}{Publications Related to This Thesis}{39}{chapter*.34}%

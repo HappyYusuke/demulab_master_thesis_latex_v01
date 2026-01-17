@@ -1,8 +1,9 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Data augmentation parameters.}}{21}{table.caption.13}%
-\contentsline {table}{\numberline {3.2}{\ignorespaces Hyper parameters for PointPillars training.}}{22}{table.caption.14}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Data augmentation parameters.\relax }}{22}{table.caption.13}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Hyper parameters for PointPillars training.\relax }}{23}{table.caption.14}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Evaluation results of pedestrian detection.}}{24}{table.caption.15}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Evaluation results of pedestrian detection.\relax }}{27}{table.caption.24}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Evaluation results of tracking metrics (AO, F1-score, and AMR) on TPT-Bench.\relax }}{29}{table.caption.27}%
 \addvspace {10\p@ }

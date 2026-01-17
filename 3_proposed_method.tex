@@ -26,10 +26,10 @@
 
 
 \section{システム構成}
-本研究で提案する人追従システムの全体構成を Fig. \ref{System overview.} に示す。
+本研究で提案する人追従システムの全体構成を Figure \ref{System overview.} に示す。
 本システムは Robot Operating System 2 (ROS 2) をミドルウェアとして構築されており、
 歩行者検出モデルには、PointPillars の ROS 2 実装である ros2\_tao\_pointpillars 
-を採用した。 Fig. \ref{System overview.} は主に追従実行時における処理フローを示し
+を採用した。 Figure \ref{System overview.} は主に追従実行時における処理フローを示し
 ているが、本システムの動作は、追従開始直後の「追従対象者の登録フェーズ」と、その後
 の「追従フェーズ」で処理内容が大きく異なる。したがって、以下ではこれら2つのフェーズ
 に分けて詳細を述べる。
@@ -65,7 +65,7 @@
 を比較照合することで、追従対象の再同定を行う。
 
 \section{ソフトウェア構成}
-ロボット用ノートPC内のソフトウェア構成をFig. \ref{Software stack.}に示す。
+ロボット用ノートPC内のソフトウェア構成をFigure \ref{Software stack.}に示す。
 ロボット用ノートPCは、RTX 3070 8GB を搭載しており、オペレーティングシステムには
 Ubuntu 22.04 LTSを使用した。深層学習モデルであるPointPillarsおよびReID3Dの実装に
 あたっては，それぞれ独立したDockerコンテナ環境を構築している．これは，両モデルが
@@ -90,12 +90,12 @@ Fitzroyを採用しており，各DockerコンテナおよびホストPCはROS2�
 
 \section{データセットの作成}
 \subsection{データ収集}
-データ収集環境をFig.\ref{Data collection environment.}に示す。実験室の広さは
+データ収集環境をFigure \ref{Data collection environment.}に示す。実験室の広さは
 $6.0\,\mathrm{m} \times 7.1\,\mathrm{m}$ である。LiDARは
-Fig.\ref{LiDAR and custom stand.}に示すように専用スタンドに固定し、部屋の中央に設置した。
+Figure \ref{LiDAR and custom stand.}に示すように専用スタンドに固定し、部屋の中央に設置した。
 本実験では、実機ロボットへの搭載を模擬するため、
-Fig.\ref{LiDAR and custom stand.}に示すスタンドを独自に製作した。このスタンドは、
-Fig.\ref{Height comparison.}に示すロボットのセンサ搭載位置と条件を一致させるよう設計
+Figure \ref{LiDAR and custom stand.}に示すスタンドを独自に製作した。このスタンドは、
+Figure \ref{Height comparison.}に示すロボットのセンサ搭載位置と条件を一致させるよう設計
 されており、LiDARの設置高さは地面から $119.5\,\mathrm{mm}$ となるように設定されている。
 
 \begin{figure*}[h]
@@ -123,11 +123,15 @@ Fig.\ref{Height comparison.}に示すロボットのセンサ搭載位置と条�
 
 \clearpage
 
-データ収集には5名の被験者が参加した。各被験者は、
-Fig.\ref{Overview of subjects captured for data collection (1/2).}および
-Fig.\ref{Overview of subjects captured for data collection (2/2).}に示すように、
-多様な服装を着用した状態で計測を行った。被験者は
-Fig.\ref{Walking patterns in data collection.}に示す5種類の歩行パターンに従って
+データ収集には5名の被験者が参加した。各被験者の外見を
+Figure \ref{Overview of subjects captured for data collection (1/2).}
+およびFigure \ref{Overview of subjects captured for data collection (2/2).}に示す。
+データセットにおける歩行者の外見的多様性を確保するため、被験者はTシャツ、
+長袖シャツ、パーカー、作業着といった季節や属性の異なる様々な服装を着用した。
+さらに、衣類だけでなく、リュックサック、スーツケース、トートバッグの携行や、
+サングラスの着用など、日常的に使用される所持品を組み合わせることで、実環境における
+多様な歩行者像を再現した状態で計測を行った。
+Figure \ref{Walking patterns in data collection.}に示す5種類の歩行パターンに従って
 LiDARの周囲を歩行し、合計で12セットのデータを収集した。ここから各セットにつき85フレーム
 をランダムに抽出し、計1020フレームの学習用データを取得した。さらに、検証用データセット
 として、異なる環境下において別の被験者3名のデータを収集し、同様に200フレームをランダムに
@@ -202,12 +206,12 @@ LiDARの周囲を歩行し、合計で12セットのデータを収集した。�
 \end{figure}
 
 \subsection{アノテーション}
-アノテーション作業の様子をFig. \ref{Annotation using BAT 3D.}に示す。本研究ではアノテ
-ーションに点群データのみを用い、ツールとしてBAT 3Dを採用した。BAT 3Dは、Webブラウザ上で
-動作するオープンソースツールである3D BAT \cite{3D BAT} 
+アノテーション作業の様子をFigure \ref{Annotation using BAT 3D.}に示す。本研究では点群
+データのみを用いて人間の手作業でアノテーションを行った。ツールはBAT 3Dを採用した。
+BAT 3Dは、Webブラウザ上で動作するオープンソースツールである3D BAT \cite{3D BAT} 
 の後継ソフトウェアである。収集した点群データに対し、歩行者（Pedestrian）のバウンディング
 ボックスの付与を行った。BAT 3Dでは、バウンディングボックスを配置すると、
-Fig.\ref{Annotation using BAT 3D.}に示すように画面左側にXYZ各軸方向からの視点（三面図）
+Figure \ref{Annotation using BAT 3D.}に示すように画面左側にXYZ各軸方向からの視点（三面図）
 が表示され、画面右側には位置や姿勢を調整するインターフェースが表示される。この機能により、
 3次元空間上での細かな位置合わせが容易となり、歩行者の正確なアノテーションが可能となった。
 
@@ -220,7 +224,7 @@ Fig.\ref{Annotation using BAT 3D.}に示すように画面左側にXYZ各軸方�
 \end{figure*}
 
 \subsection{データ拡張}
-データ拡張の適用例をFig. \ref{Examples of data augmentation.}に示す。本研究では、
+データ拡張の適用例をFigure \ref{Examples of data augmentation.}に示す。本研究では、
 学習データの多様性を向上させるため、独自に実装したプログラムを用いて点群データの拡張を
 行った。拡張には、主に以下の3種類の手法を採用した。
 
