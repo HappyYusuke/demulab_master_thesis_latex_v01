@@ -1,71 +1,71 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces System overview.}}{13}{figure.caption.2}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Software stack.}}{15}{figure.caption.5}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Data collection environment.}}{16}{figure.caption.6}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces LiDAR and custom stand.}}{16}{figure.caption.7}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Height comparison.}}{16}{figure.caption.7}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Overview of subjects captured for data collection (1/2).}}{17}{figure.caption.8}%
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {}}}{17}{subfigure.6.1}%
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {}}}{17}{subfigure.6.2}%
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {}}}{17}{subfigure.6.3}%
-\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {}}}{17}{subfigure.6.4}%
-\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {}}}{17}{subfigure.6.5}%
-\contentsline {subfigure}{\numberline {(f)}{\ignorespaces {}}}{17}{subfigure.6.6}%
-\contentsline {subfigure}{\numberline {(g)}{\ignorespaces {}}}{17}{subfigure.6.7}%
-\contentsline {subfigure}{\numberline {(h)}{\ignorespaces {}}}{17}{subfigure.6.8}%
-\contentsline {subfigure}{\numberline {(i)}{\ignorespaces {}}}{17}{subfigure.6.9}%
-\contentsline {subfigure}{\numberline {(j)}{\ignorespaces {}}}{17}{subfigure.6.10}%
-\contentsline {subfigure}{\numberline {(k)}{\ignorespaces {}}}{17}{subfigure.6.11}%
-\contentsline {subfigure}{\numberline {(l)}{\ignorespaces {}}}{17}{subfigure.6.12}%
-\contentsline {subfigure}{\numberline {(m)}{\ignorespaces {}}}{17}{subfigure.6.13}%
-\contentsline {subfigure}{\numberline {(n)}{\ignorespaces {}}}{17}{subfigure.6.14}%
-\contentsline {subfigure}{\numberline {(o)}{\ignorespaces {}}}{17}{subfigure.6.15}%
-\contentsline {subfigure}{\numberline {(p)}{\ignorespaces {}}}{17}{subfigure.6.16}%
-\contentsline {subfigure}{\numberline {(q)}{\ignorespaces {}}}{17}{subfigure.6.17}%
-\contentsline {subfigure}{\numberline {(r)}{\ignorespaces {}}}{17}{subfigure.6.18}%
-\contentsline {subfigure}{\numberline {(s)}{\ignorespaces {}}}{17}{subfigure.6.19}%
-\contentsline {subfigure}{\numberline {(t)}{\ignorespaces {}}}{17}{subfigure.6.20}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Overview of subjects captured for data collection (2/2).}}{18}{figure.caption.9}%
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {}}}{18}{subfigure.7.1}%
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {}}}{18}{subfigure.7.2}%
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {}}}{18}{subfigure.7.3}%
-\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {}}}{18}{subfigure.7.4}%
-\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {}}}{18}{subfigure.7.5}%
-\contentsline {subfigure}{\numberline {(f)}{\ignorespaces {}}}{18}{subfigure.7.6}%
-\contentsline {subfigure}{\numberline {(g)}{\ignorespaces {}}}{18}{subfigure.7.7}%
-\contentsline {subfigure}{\numberline {(h)}{\ignorespaces {}}}{18}{subfigure.7.8}%
-\contentsline {subfigure}{\numberline {(i)}{\ignorespaces {}}}{18}{subfigure.7.9}%
-\contentsline {subfigure}{\numberline {(j)}{\ignorespaces {}}}{18}{subfigure.7.10}%
-\contentsline {subfigure}{\numberline {(k)}{\ignorespaces {}}}{18}{subfigure.7.11}%
-\contentsline {subfigure}{\numberline {(l)}{\ignorespaces {}}}{18}{subfigure.7.12}%
-\contentsline {subfigure}{\numberline {(m)}{\ignorespaces {}}}{18}{subfigure.7.13}%
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Walking patterns in data collection.}}{19}{figure.caption.10}%
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Straight trajectory.}}}{19}{subfigure.8.1}%
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Walking around the sensor.}}}{19}{subfigure.8.2}%
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Circular trajectory.}}}{19}{subfigure.8.3}%
-\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Lateral meandering trajectory.}}}{19}{subfigure.8.4}%
-\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Longitudinal meandering trajectory.}}}{19}{subfigure.8.5}%
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Annotation using BAT 3D.}}{20}{figure.caption.11}%
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Examples of data augmentation.}}{21}{figure.caption.12}%
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Original point cloud.}}}{21}{subfigure.10.1}%
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Augmented point cloud.}}}{21}{subfigure.10.2}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces System overview.}}{14}{figure.caption.2}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Software stack.}}{16}{figure.caption.5}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Data collection environment.}}{17}{figure.caption.6}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces LiDAR and custom stand.}}{17}{figure.caption.7}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Height comparison.}}{17}{figure.caption.7}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Overview of subjects captured for data collection (1/2).}}{18}{figure.caption.8}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {}}}{18}{subfigure.6.1}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {}}}{18}{subfigure.6.2}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {}}}{18}{subfigure.6.3}%
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {}}}{18}{subfigure.6.4}%
+\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {}}}{18}{subfigure.6.5}%
+\contentsline {subfigure}{\numberline {(f)}{\ignorespaces {}}}{18}{subfigure.6.6}%
+\contentsline {subfigure}{\numberline {(g)}{\ignorespaces {}}}{18}{subfigure.6.7}%
+\contentsline {subfigure}{\numberline {(h)}{\ignorespaces {}}}{18}{subfigure.6.8}%
+\contentsline {subfigure}{\numberline {(i)}{\ignorespaces {}}}{18}{subfigure.6.9}%
+\contentsline {subfigure}{\numberline {(j)}{\ignorespaces {}}}{18}{subfigure.6.10}%
+\contentsline {subfigure}{\numberline {(k)}{\ignorespaces {}}}{18}{subfigure.6.11}%
+\contentsline {subfigure}{\numberline {(l)}{\ignorespaces {}}}{18}{subfigure.6.12}%
+\contentsline {subfigure}{\numberline {(m)}{\ignorespaces {}}}{18}{subfigure.6.13}%
+\contentsline {subfigure}{\numberline {(n)}{\ignorespaces {}}}{18}{subfigure.6.14}%
+\contentsline {subfigure}{\numberline {(o)}{\ignorespaces {}}}{18}{subfigure.6.15}%
+\contentsline {subfigure}{\numberline {(p)}{\ignorespaces {}}}{18}{subfigure.6.16}%
+\contentsline {subfigure}{\numberline {(q)}{\ignorespaces {}}}{18}{subfigure.6.17}%
+\contentsline {subfigure}{\numberline {(r)}{\ignorespaces {}}}{18}{subfigure.6.18}%
+\contentsline {subfigure}{\numberline {(s)}{\ignorespaces {}}}{18}{subfigure.6.19}%
+\contentsline {subfigure}{\numberline {(t)}{\ignorespaces {}}}{18}{subfigure.6.20}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Overview of subjects captured for data collection (2/2).}}{19}{figure.caption.9}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {}}}{19}{subfigure.7.1}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {}}}{19}{subfigure.7.2}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {}}}{19}{subfigure.7.3}%
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {}}}{19}{subfigure.7.4}%
+\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {}}}{19}{subfigure.7.5}%
+\contentsline {subfigure}{\numberline {(f)}{\ignorespaces {}}}{19}{subfigure.7.6}%
+\contentsline {subfigure}{\numberline {(g)}{\ignorespaces {}}}{19}{subfigure.7.7}%
+\contentsline {subfigure}{\numberline {(h)}{\ignorespaces {}}}{19}{subfigure.7.8}%
+\contentsline {subfigure}{\numberline {(i)}{\ignorespaces {}}}{19}{subfigure.7.9}%
+\contentsline {subfigure}{\numberline {(j)}{\ignorespaces {}}}{19}{subfigure.7.10}%
+\contentsline {subfigure}{\numberline {(k)}{\ignorespaces {}}}{19}{subfigure.7.11}%
+\contentsline {subfigure}{\numberline {(l)}{\ignorespaces {}}}{19}{subfigure.7.12}%
+\contentsline {subfigure}{\numberline {(m)}{\ignorespaces {}}}{19}{subfigure.7.13}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Walking patterns in data collection.}}{20}{figure.caption.10}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Straight trajectory.}}}{20}{subfigure.8.1}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Walking around the sensor.}}}{20}{subfigure.8.2}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Circular trajectory.}}}{20}{subfigure.8.3}%
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Lateral meandering trajectory.}}}{20}{subfigure.8.4}%
+\contentsline {subfigure}{\numberline {(e)}{\ignorespaces {Longitudinal meandering trajectory.}}}{20}{subfigure.8.5}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Annotation using BAT 3D.}}{21}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Examples of data augmentation.}}{22}{figure.caption.12}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Original point cloud.}}}{22}{subfigure.10.1}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Augmented point cloud.}}}{22}{subfigure.10.2}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Evolution of loss functions and learning rate.}}{31}{figure.caption.25}%
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Total training loss}}}{31}{subfigure.1.1}%
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Classification loss}}}{31}{subfigure.1.2}%
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Localization loss}}}{31}{subfigure.1.3}%
-\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Direction loss}}}{31}{subfigure.1.4}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Examples of pedestrian detection by the conventional model and Ours.}}{32}{figure.caption.26}%
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Detection results using the conventional model.}}}{32}{subfigure.2.1}%
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Result of the optimized PointPillars (Ours).}}}{32}{subfigure.2.2}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Sequential tracking results showing the target before, during, and after occlusion.}}{34}{figure.caption.28}%
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Tracking before occlusion.}}}{34}{subfigure.3.1}%
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Tracking during occlusion.}}}{34}{subfigure.3.2}%
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Tracking after occlusion.}}}{34}{subfigure.3.3}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Process of recovering the target from a lost state.}}{35}{figure.caption.29}%
-\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Target tracking in progress.}}}{35}{subfigure.4.1}%
-\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Target lost.}}}{35}{subfigure.4.2}%
-\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Target re-identified.}}}{35}{subfigure.4.3}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Evolution of loss functions and learning rate.}}{32}{figure.caption.25}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Total training loss}}}{32}{subfigure.1.1}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Classification loss}}}{32}{subfigure.1.2}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Localization loss}}}{32}{subfigure.1.3}%
+\contentsline {subfigure}{\numberline {(d)}{\ignorespaces {Direction loss}}}{32}{subfigure.1.4}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Examples of pedestrian detection by the conventional model and Ours.}}{33}{figure.caption.26}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Detection results using the conventional model.}}}{33}{subfigure.2.1}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Result of the optimized PointPillars (Ours).}}}{33}{subfigure.2.2}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Sequential tracking results showing the target before, during, and after occlusion.}}{35}{figure.caption.28}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Tracking before occlusion.}}}{35}{subfigure.3.1}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Tracking during occlusion.}}}{35}{subfigure.3.2}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Tracking after occlusion.}}}{35}{subfigure.3.3}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Process of recovering the target from a lost state.}}{36}{figure.caption.29}%
+\contentsline {subfigure}{\numberline {(a)}{\ignorespaces {Target tracking in progress.}}}{36}{subfigure.4.1}%
+\contentsline {subfigure}{\numberline {(b)}{\ignorespaces {Target lost.}}}{36}{subfigure.4.2}%
+\contentsline {subfigure}{\numberline {(c)}{\ignorespaces {Target re-identified.}}}{36}{subfigure.4.3}%
 \addvspace {10\p@ }

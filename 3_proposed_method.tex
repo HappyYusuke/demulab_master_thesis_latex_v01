@@ -6,11 +6,47 @@ First, we adopt "PointPillars," which is a 3D point cloud object detection netwo
 
 The specific processing flow of the system is as follows. First, surrounding pedestrians are detected using the re-trained PointPillars. At the start of tracking, features are extracted from the point cloud of the specified target using ReID3D, and the person is registered as the tracking target. During normal operation, the robot follows the target through tracking based on the detected position. If the tracking is interrupted due to occlusion by obstacles during following, the system transitions to the re-identification phase. In this phase, the point clouds of all pedestrians detected within the field of view are input into ReID3D, and they are compared and matched with the features of the target registered in advance. Thereby, the system correctly re-identifies the tracking target from the environment after occlusion and realizes the autonomous resumption of the following operation.
 
+\section{Problem Statement}
+\noindent The specific problem definition addressed in this study is described below.
 
+\begin{itemize}
+    \item \textbf{Inputs}
+    \begin{itemize}
+        \item Point cloud data.
+    \end{itemize}
+
+    \item \textbf{Outputs}
+    \begin{itemize}
+        \item The position of the target.
+    \end{itemize}
+
+    \item \textbf{Assumptions}
+    \begin{itemize}
+        \item The target is a pedestrian.
+        \item The system is equipped with a 3D LiDAR manufactured by Livox.
+        \item The computing environment includes an NVIDIA RTX 3000 series GPU or higher.
+    \end{itemize}
+
+    \item \textbf{Out of Scope}
+    \begin{itemize}
+        \item Recovery from the complete disappearance of the target for a long period.
+        \item Handling significant changes in appearance, such as the target changing clothes.
+    \end{itemize}
+
+    \item \textbf{Success Criteria}
+    \begin{itemize}
+        \item The system can correctly re-identify the target after an occlusion occurs and resume tracking.
+    \end{itemize}
+
+    \item \textbf{Evaluation Metrics}
+    \begin{itemize}
+        \item Comparison with baselines based on target tracking accuracy using TPT-Bench \cite{TPT-Bench}.
+    \end{itemize}
+\end{itemize}
 
 \section{System Configuration}
 
-\noindent Figure. \ref{System overview.} shows the overall configuration of the person following system proposed in this study. This system is built using Robot Operating System 2 (ROS 2) as middleware. For the pedestrian detection model, we adopted ros2\_tao\_pointpillars, which is a ROS 2 implementation of PointPillars. Although Figure. \ref{System overview.} mainly illustrates the processing flow during the execution of following, the operation of this system differs significantly between the "target person registration phase" immediately after the start of following and the subsequent "following phase." Therefore, the details will be described below by dividing them into these two phases.
+\noindent Figure \ref{System overview.} shows the overall configuration of the person following system proposed in this study. This system is built using Robot Operating System 2 (ROS 2) as middleware. For the pedestrian detection model, we adopted ros2\_tao\_pointpillars, which is a ROS 2 implementation of PointPillars. Although Figure \ref{System overview.} mainly illustrates the processing flow during the execution of following, the operation of this system differs significantly between the "target person registration phase" immediately after the start of following and the subsequent "following phase." Therefore, the details will be described below by dividing them into these two phases.
 
 \begin{figure*}[h]
     \begin{center}
@@ -28,15 +64,17 @@ The specific processing flow of the system is as follows. First, surrounding ped
 
 \section{Software Configuration}
 
-\noindent The software stack of the laptop used for the robot is shown in Figure. \ref{Software stack.}. The laptop is equipped with an NVIDIA RTX 3070 GPU (8GB memory), and we used Ubuntu 22.04 LTS as the operating system.
+\noindent The software stack of the laptop used for the robot is shown in Figure \ref{Software stack.}. The laptop is equipped with an NVIDIA RTX 3070 GPU (8GB memory), and we used Ubuntu 22.04 LTS as the operating system.
 
 In implementing the deep learning models, PointPillars and ReID3D, we constructed independent Docker container environments for each model. This approach was taken to resolve dependency issues. Specifically, the two models require different versions of the CUDA toolkit and drivers, which makes it difficult for them to coexist within a single host environment. By separating them into containers, we solved this problem.
 
 We adopted Robot Operating System 2 (ROS 2) Foxy Fitzroy as the middleware. Each Docker container and the host PC communicate and coordinate with each other via the ROS 2 communication protocol. Furthermore, we developed a custom ROS 2 package named "HARRP (Human-following Autonomous Robot system with ReID3D and PointPillars)." This package was designed to integratedly manage the entire processing pipeline, ranging from detection by PointPillars and identification by ReID3D to the final control of the robot. By simply launching this HARRP package, the system can be executed as a single integrated system. This allows the user to operate it without needing to be aware of the underlying distributed container environments.
 
+\clearpage
+
 \begin{figure*}[h]
     \begin{center}
-    \includegraphics[height=120mm,clip]{figs/Software_stack.png}
+    \includegraphics[height=110mm,clip]{figs/Software_stack.png}
     \caption{Software stack.}
     \label{Software stack.}
     \end{center}
@@ -44,9 +82,9 @@ We adopted Robot Operating System 2 (ROS 2) Foxy Fitzroy as the middleware. Each
 
 \section{Dataset Construction}
 \subsection{Data Collection}
-The data collection environment is shown in Figure. \ref{Data collection environment.}. The dimensions of the laboratory used for the experiment are $6.0\,\mathrm{m} \times 7.1\,\mathrm{m}$. The LiDAR sensor was fixed to a dedicated stand as shown in Figure. \ref{LiDAR and custom stand.} and installed in the center of the room.
+The data collection environment is shown in Figure \ref{Data collection environment.}. The dimensions of the laboratory used for the experiment are $6.0\,\mathrm{m} \times 7.1\,\mathrm{m}$. The LiDAR sensor was fixed to a dedicated stand as shown in Figure \ref{LiDAR and custom stand.} and installed in the center of the room.
 
-In this experiment, we specifically designed and fabricated the custom stand shown in Figure. \ref{LiDAR and custom stand.} to simulate the conditions where the sensor is mounted on an actual robot. This stand was designed to match the sensor mounting position and configuration of the robot shown in Figure. \ref{Height comparison.}. Accordingly, the mounting height of the LiDAR was set to be $119.5\,\mathrm{mm}$ from the ground.
+In this experiment, we specifically designed and fabricated the custom stand shown in Figure \ref{LiDAR and custom stand.} to simulate the conditions where the sensor is mounted on an actual robot. This stand was designed to match the sensor mounting position and configuration of the robot shown in Figure \ref{Height comparison.}. Accordingly, the mounting height of the LiDAR was set to be $119.5\,\mathrm{mm}$ from the ground.
 
 \clearpage
 
@@ -150,9 +188,9 @@ The subjects walked around the LiDAR following five walking patterns shown in Fi
 
 
 \subsection{Annotation}
-\noindent The annotation process is shown in Figure. \ref{Annotation using BAT 3D.}. In this study, we used only point cloud data for the annotation task. We adopted BAT 3D as the annotation tool. BAT 3D is the successor software to 3D BAT \cite{3D BAT}, which is an open-source tool that runs on a web browser. We assigned bounding boxes for pedestrians to the collected point cloud data.
+\noindent The annotation process is shown in Figure \ref{Annotation using BAT 3D.}. In this study, we used only point cloud data for the annotation task. We adopted BAT 3D as the annotation tool. BAT 3D is the successor software to 3D BAT \cite{3D BAT}, which is an open-source tool that runs on a web browser. We assigned bounding boxes for pedestrians to the collected point cloud data.
 
-In BAT 3D, when a bounding box is placed, three views from the X, Y, and Z axes are displayed on the left side of the screen, as shown in Figure. \ref{Annotation using BAT 3D.}. On the right side of the screen, an interface for adjusting the position and posture is displayed. This feature facilitates fine adjustments in the 3D space. As a result, it became possible to perform accurate annotation of pedestrians.
+In BAT 3D, when a bounding box is placed, three views from the X, Y, and Z axes are displayed on the left side of the screen, as shown in Figure \ref{Annotation using BAT 3D.}. On the right side of the screen, an interface for adjusting the position and posture is displayed. This feature facilitates fine adjustments in the 3D space. As a result, it became possible to perform accurate annotation of pedestrians.
 
 \begin{figure*}[h]
     \begin{center}
@@ -165,7 +203,7 @@ In BAT 3D, when a bounding box is placed, three views from the X, Y, and Z axes 
 
 
 \subsection{Data Augmentation}
-\noindent Figure. \ref{Examples of data augmentation.} shows examples of data augmentation. In this study, we performed data augmentation on the point cloud data to improve the diversity of the training data. For this purpose, we used a program that we implemented independently. We mainly adopted the following three methods for the augmentation.
+\noindent Figure \ref{Examples of data augmentation.} shows examples of data augmentation. In this study, we performed data augmentation on the point cloud data to improve the diversity of the training data. For this purpose, we used a program that we implemented independently. We mainly adopted the following three methods for the augmentation.
 
 First is Ground Truth Sampling (GT-Sampling). This is a method that randomly extracts pedestrian point clouds contained in the training dataset and adds them to the target frame. Second is Local Transformation. In this method, we apply rotation, scaling, position noise, and point noise to each pedestrian point cloud individually. Third is Global Transformation. We apply rotation, scaling, and horizontal flipping to the entire point cloud in the frame collectively.
 
