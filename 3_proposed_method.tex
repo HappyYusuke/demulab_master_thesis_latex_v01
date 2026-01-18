@@ -23,13 +23,39 @@
 と比較照合を行う。これにより、オクルージョン後の環境から追従対象を正しく再識別し、
 追従動作の自律的な再開を実現する。
 
+\section{Problem Statement}
+本研究における解決すべき具体的な課題を以下に示す。
 
+\begin{itemize}
+    \item Inputs
+    点群
+
+    \item Outputs
+    ターゲット位置
+
+    \item 前提条件
+    ターゲットは歩行者であること。
+    Livox社製のLiDARを搭載していること。
+    NVIDIA RTX 3000シリーズ以上を搭載したPCを使用していること。
+
+    \item Out of scope
+    長時間におけるターゲットの完全消失への対応。
+    ターゲットの着替えや大幅な外見変化への対応。
+
+    \item 成功条件
+    オクルージョン発生後にターゲットを正しく再識別し、追従を再開できること。
+
+    \item 評価指標
+    TPT-Bench \cite{TPT-Bench} を用いたターゲット追跡精度によるベースラインとの比較。
+
+\end{itemize}
 
 \section{システム構成}
 本研究で提案する人追従システムの全体構成を Figure \ref{System overview.} に示す。
 本システムは Robot Operating System 2 (ROS 2) をミドルウェアとして構築されており、
 歩行者検出モデルには、PointPillars の ROS 2 実装である ros2\_tao\_pointpillars 
-を採用した。 Figure \ref{System overview.} は主に追従実行時における処理フローを示し
+を採用し,オクルージョン後の再識別のためReID3Dを組み込んでいる。
+また、Figure \ref{System overview.} は主に追従実行時における処理フローを示し
 ているが、本システムの動作は、追従開始直後の「追従対象者の登録フェーズ」と、その後
 の「追従フェーズ」で処理内容が大きく異なる。したがって、以下ではこれら2つのフェーズ
 に分けて詳細を述べる。
