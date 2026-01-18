@@ -393,7 +393,7 @@
       {\LARGE\bfseries \kit@title\par}
       \vfill
       {\large \kit@author\par}
-      \ifstrempty{\kit@studentid}{}{\vspace{2mm}{\large Student ID: \kit@studentid\par}}
+      %\ifstrempty{\kit@studentid}{}{\vspace{2mm}{\large Student ID: \kit@studentid\par}}
       \vspace{6mm}
       \ifstrempty{\kit@supervisor}{}{\large Supervisor: \kit@supervisor\par}
       \vspace{10mm}

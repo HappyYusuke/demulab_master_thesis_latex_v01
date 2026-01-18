@@ -1,6 +1,6 @@
 \section{System Overview}
 
-In this study, we propose a system that incorporates a LiDAR-based person re-identification model, "ReID3D," to autonomously recover from a "lost state" after an occlusion occurs during person following using an omnidirectional 3D LiDAR. This system is mainly composed of three phases: "pedestrian detection," "registration and tracking of the target," and "re-identification after occlusion."
+\noindent In this study, we propose a system that incorporates a LiDAR-based person re-identification model, "ReID3D," to autonomously recover from a "lost state" after an occlusion occurs during person following using an omnidirectional 3D LiDAR. This system is mainly composed of three phases: "pedestrian detection," "registration and tracking of the target," and "re-identification after occlusion."
 
 First, we adopt "PointPillars," which is a 3D point cloud object detection network, as a detection model to identify the positions of pedestrians in the environment. The publicly available pre-trained model of PointPillars uses the KITTI dataset \cite{KITTI} collected with a rotating LiDAR (Velodyne HDL-64E). However, the scan pattern and point cloud density are significantly different from the prism scanning type LiDAR, "Livox Mid-360," used in this study. The domain gap caused by this difference in sensor methods leads to a decrease in detection accuracy. Therefore, in this study, we create an originally constructed pedestrian dataset using the Livox Mid-360 and perform re-training (fine-tuning) of PointPillars. By doing so, we construct a detector suitable for this system.
 
@@ -10,7 +10,7 @@ The specific processing flow of the system is as follows. First, surrounding ped
 
 \section{System Configuration}
 
-Figure. \ref{System overview.} shows the overall configuration of the person following system proposed in this study. This system is built using Robot Operating System 2 (ROS 2) as middleware. For the pedestrian detection model, we adopted ros2\_tao\_pointpillars, which is a ROS 2 implementation of PointPillars. Although Figure. \ref{System overview.} mainly illustrates the processing flow during the execution of following, the operation of this system differs significantly between the "target person registration phase" immediately after the start of following and the subsequent "following phase." Therefore, the details will be described below by dividing them into these two phases.
+\noindent Figure. \ref{System overview.} shows the overall configuration of the person following system proposed in this study. This system is built using Robot Operating System 2 (ROS 2) as middleware. For the pedestrian detection model, we adopted ros2\_tao\_pointpillars, which is a ROS 2 implementation of PointPillars. Although Figure. \ref{System overview.} mainly illustrates the processing flow during the execution of following, the operation of this system differs significantly between the "target person registration phase" immediately after the start of following and the subsequent "following phase." Therefore, the details will be described below by dividing them into these two phases.
 
 \begin{figure*}[h]
     \begin{center}
@@ -28,7 +28,7 @@ Figure. \ref{System overview.} shows the overall configuration of the person fol
 
 \section{Software Configuration}
 
-The software stack of the laptop used for the robot is shown in Figure. \ref{Software stack.}. The laptop is equipped with an NVIDIA RTX 3070 GPU (8GB memory), and we used Ubuntu 22.04 LTS as the operating system.
+\noindent The software stack of the laptop used for the robot is shown in Figure. \ref{Software stack.}. The laptop is equipped with an NVIDIA RTX 3070 GPU (8GB memory), and we used Ubuntu 22.04 LTS as the operating system.
 
 In implementing the deep learning models, PointPillars and ReID3D, we constructed independent Docker container environments for each model. This approach was taken to resolve dependency issues. Specifically, the two models require different versions of the CUDA toolkit and drivers, which makes it difficult for them to coexist within a single host environment. By separating them into containers, we solved this problem.
 
@@ -150,7 +150,7 @@ The subjects walked around the LiDAR following five walking patterns shown in Fi
 
 
 \subsection{Annotation}
-The annotation process is shown in Figure. \ref{Annotation using BAT 3D.}. In this study, we used only point cloud data for the annotation task. We adopted BAT 3D as the annotation tool. BAT 3D is the successor software to 3D BAT \cite{3D BAT}, which is an open-source tool that runs on a web browser. We assigned bounding boxes for pedestrians to the collected point cloud data.
+\noindent The annotation process is shown in Figure. \ref{Annotation using BAT 3D.}. In this study, we used only point cloud data for the annotation task. We adopted BAT 3D as the annotation tool. BAT 3D is the successor software to 3D BAT \cite{3D BAT}, which is an open-source tool that runs on a web browser. We assigned bounding boxes for pedestrians to the collected point cloud data.
 
 In BAT 3D, when a bounding box is placed, three views from the X, Y, and Z axes are displayed on the left side of the screen, as shown in Figure. \ref{Annotation using BAT 3D.}. On the right side of the screen, an interface for adjusting the position and posture is displayed. This feature facilitates fine adjustments in the 3D space. As a result, it became possible to perform accurate annotation of pedestrians.
 
@@ -165,7 +165,7 @@ In BAT 3D, when a bounding box is placed, three views from the X, Y, and Z axes 
 
 
 \subsection{Data Augmentation}
-Figure. \ref{Examples of data augmentation.} shows examples of data augmentation. In this study, we performed data augmentation on the point cloud data to improve the diversity of the training data. For this purpose, we used a program that we implemented independently. We mainly adopted the following three methods for the augmentation.
+\noindent Figure. \ref{Examples of data augmentation.} shows examples of data augmentation. In this study, we performed data augmentation on the point cloud data to improve the diversity of the training data. For this purpose, we used a program that we implemented independently. We mainly adopted the following three methods for the augmentation.
 
 First is Ground Truth Sampling (GT-Sampling). This is a method that randomly extracts pedestrian point clouds contained in the training dataset and adds them to the target frame. Second is Local Transformation. In this method, we apply rotation, scaling, position noise, and point noise to each pedestrian point cloud individually. Third is Global Transformation. We apply rotation, scaling, and horizontal flipping to the entire point cloud in the frame collectively.
 
@@ -217,7 +217,7 @@ Table \ref{Data augmentation parameters.} shows the specific parameter settings 
 
 
 \section{Training of PointPillars}
-We used the dataset constructed in the previous section to train the PointPillars model. The training was conducted using the NVIDIA TAO Toolkit. The TAO Toolkit is a framework that supports efficient training and optimization of deep learning models. It also provides pre-trained models for PointPillars.
+\noindent We used the dataset constructed in the previous section to train the PointPillars model. The training was conducted using the NVIDIA TAO Toolkit. The TAO Toolkit is a framework that supports efficient training and optimization of deep learning models. It also provides pre-trained models for PointPillars.
 
 In this study, we used the PointPillars training pipeline provided by the TAO Toolkit. We performed fine-tuning using our constructed dataset. For the training hardware, we used a desktop PC equipped with two NVIDIA RTX 3090 (24GB) GPUs. The hyperparameters used for training are shown in Table \ref{Hyper parameters for PointPillars training.}.
 
@@ -256,12 +256,12 @@ Furthermore, we introduced gradient clipping (Gradient Norm Clip) to ensure the 
 
 
 \section{Tracking}
-For the tracking process, we managed the object's 3-dimensional position $(x, y, z)$ and its respective velocities $(v_x, v_y, v_z)$ as state variables. To estimate the true position from the point cloud data, which contains observation noise, we implemented a linear Kalman Filter based on a constant velocity model.
+\noindent For the tracking process, we managed the object's 3-dimensional position $(x, y, z)$ and its respective velocities $(v_x, v_y, v_z)$ as state variables. To estimate the true position from the point cloud data, which contains observation noise, we implemented a linear Kalman Filter based on a constant velocity model.
 
 This algorithm consists of two stages: the Prediction Step'' and the Update Step.'' In the Prediction Step, the system predicts the state at the next time step based on a physical model. In the Update Step, the system corrects the estimated values using the observation values obtained from the sensors.
 
 \subsection{Definition of State Variables and Model}
-The state vector of the system, $\mathbf{x}_k$, is defined as the following 6-dimensional vector. It consists of position and velocity components.
+\noindent The state vector of the system, $\mathbf{x}_k$, is defined as the following 6-dimensional vector. It consists of position and velocity components.
 
 \begin{equation}
 \mathbf{x}_k = \begin{bmatrix} x & y & z & v_x & v_y & v_z \end{bmatrix}^T_k
@@ -281,7 +281,7 @@ We assume that the object moves at a constant velocity during a small time inter
 \end{equation}
 
 \subsection{Prediction Step}
-In this step, we predict the state at the current time $k$ from the estimated value at the previous time $k-1$.
+\noindent In this step, we predict the state at the current time $k$ from the estimated value at the previous time $k-1$.
 
 \begin{itemize}
     \item \textbf{State Prediction}:
@@ -298,7 +298,7 @@ In this step, we predict the state at the current time $k$ from the estimated va
 \end{itemize}
 
 \subsection{Update Step}
-In this step, we correct the predicted values using the observation values $\mathbf{z}_k$ obtained from PointPillars. The observation vector is a 3-dimensional vector consisting only of position: $\mathbf{z}_k = [z_x, z_y, z_z]^T$.
+\noindent In this step, we correct the predicted values using the observation values $\mathbf{z}_k$ obtained from PointPillars. The observation vector is a 3-dimensional vector consisting only of position: $\mathbf{z}_k = [z_x, z_y, z_z]^T$.
 
 \begin{itemize}
     \item \textbf{Observation Model}:
@@ -332,7 +332,7 @@ In this step, we correct the predicted values using the observation values $\mat
 \end{itemize}
 
 \subsection{Implementation Features}
-In this implementation, we address the issue of asynchronous topic reception in the ROS2 environment. Therefore, we do not use a fixed time step. Instead, we dynamically calculate the State Transition Matrix $\mathbf{F}$ using the elapsed time $dt$ from the previous update.
+\noindent In this implementation, we address the issue of asynchronous topic reception in the ROS2 environment. Therefore, we do not use a fixed time step. Instead, we dynamically calculate the State Transition Matrix $\mathbf{F}$ using the elapsed time $dt$ from the previous update.
 
 In addition, at the time of initialization, we set the error covariance matrix $\mathbf{P}$ to a large value, specifically $10.0 \cdot \mathbf{I}$. By doing this, the system is designed to place more importance on the observation values immediately after the tracking starts. This ensures that the estimated value converges rapidly to the true value.
 

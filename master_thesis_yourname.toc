@@ -1,6 +1,5 @@
 \contentsline {chapter}{Abstract}{i}{chapter*.1}%
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Thesis Organization}{2}{section.1.1}%
 \contentsline {chapter}{\numberline {2}Related Work}{3}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Person Detection Methods Using 2D LiDAR}{3}{section.2.1}%
 \contentsline {section}{\numberline {2.2}Person Following Methods Using 3D LiDAR}{4}{section.2.2}%
@@ -50,6 +49,5 @@
 \contentsline {subsubsection}{Comprehensive Discussion on Target Disappearance and Recovery Capability}{38}{subsubsection*.32}%
 \contentsline {chapter}{\numberline {5}Conclusion}{39}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Conclusion}{39}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Future Work}{39}{section.5.2}%
-\contentsline {chapter}{References}{41}{section.5.2}%
+\contentsline {chapter}{References}{41}{section.5.1}%
 \contentsline {chapter}{Publications Related to This Thesis}{43}{chapter*.34}%
