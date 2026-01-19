@@ -15,7 +15,7 @@ The first experiment is a quantitative evaluation of the pedestrian detection ac
 In addition, for the experimental equipment, we used a laptop PC equipped with an NVIDIA RTX 3070 (8GB) GPU.
 
 \subsection{Comparative Experiment on Pedestrian Detection Performance}
-\noindent In this experiment, we evaluate the pedestrian detection performance of PointPillars using the 4,500-frame validation dataset constructed in Section 3.4.
+\noindent In this experiment, we evaluate the pedestrian detection performance of PointPillars using the 4,500-frame validation dataset constructed in Section \ref{Dataset Construction}.
 
 As evaluation metrics, we adopted BEV (Bird’s Eye View) AP and 3D AP, which are widely used in object detection. BEV AP is a metric calculated based on the area overlap with the ground truth, obtained by projecting the estimated 3D bounding box onto a 2D plane (bird's eye view). On the other hand, 3D AP is calculated based on the overlap of the 3D position and volume (IoU: Intersection over Union) of the bounding box. In this experiment, the IoU threshold was set to 0.5, following general standards for pedestrian detection.
 

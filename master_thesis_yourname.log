@@ -1,4 +1,4 @@
-This is e-upTeX, Version 3.141592653-p4.1.0-u1.29-230214-2.6 (utf8.sjis) (TeX Live 2023) (preloaded format=platex 2023.12.4)  18 JAN 2026 22:48
+This is e-upTeX, Version 3.141592653-p4.1.0-u1.29-230214-2.6 (utf8.sjis) (TeX Live 2023) (preloaded format=platex 2023.12.4)  19 JAN 2026 10:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -847,12 +847,12 @@ Package rerunfilecheck Info: File `master_thesis_yourname.out' has not changed.
 (rerunfilecheck)             Checksum: 994C00F2AB5ED25586FE96A10BA5E7B9;7858.
  ) 
 Here is how much of TeX's memory you used:
- 18848 strings out of 474925
- 324470 string characters out of 5765770
- 1935403 words of memory out of 5000000
- 40716 multiletter control sequences out of 15000+600000
+ 18849 strings out of 474925
+ 324492 string characters out of 5765770
+ 1936403 words of memory out of 5000000
+ 40717 multiletter control sequences out of 15000+600000
  576914 words of font info for 111 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
  87i,10n,93p,1966b,667s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on master_thesis_yourname.dvi (50 pages, 208896 bytes).
+Output written on master_thesis_yourname.dvi (50 pages, 209252 bytes).
